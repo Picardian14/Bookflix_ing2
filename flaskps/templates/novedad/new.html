@@ -19,7 +19,7 @@
 
 {% block main %}
 
-    <h4 class="card-title mt-3 text-center">Ingrese sus datos</h4>
+    <h4 class="card-title mt-3 text-center">Ingrese datos de la novedad</h4>
                 <p class="text-center">Bookflix</p>
                 <p class="divider-text">
                 </p>
@@ -34,7 +34,8 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"> <i class="fa fa-user"></i> </span>
                         </div>
-                        <textarea required name="descripcion" class="form-control" placeholder="descripcion de Novedad" ></textarea>                                
+                        <textarea required name="descripcion" class="form-control" placeholder="descripcion de Novedad" ></textarea>  
+                        <input type="hidden" name="created_at" class="form-control" placeholder="Fecha creacion" type="date" value="{{today}}">                           
                     </div> <!-- form-group// -->
                     
                     <div class="form-group">

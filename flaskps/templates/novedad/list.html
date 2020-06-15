@@ -1,17 +1,12 @@
 {% extends "novedad/novedadBase.html" %}
 
 {% block main %}
-    
-
-
     <div class="container">
             <div class="row">
                 <div class="col-md-20">
                     <div class="panel panel-primary" >
                         <div class="panel-heading">
-                            {% if adm %}
-                                <a class="btn btn-link" href="{{url_for('novedad_list')}}">Ver Listado de Novedades</a>
-                            {% endif %}
+                            <a class="btn btn-link" href="{{url_for('novedad_new')}}">Cargar Novedad</a>
                             <br><br>
                             <table class="table table-hover" id="dev-table" >
                             <tr>
@@ -22,6 +17,13 @@
                                 <tr>
                                     <td>{{nov.titulo}}</td>
                                     <td>{{nov.descripcion}}</td>
+                                    <td>{{nov.created_at}}</td>
+
+                                    <td>Ver Detalle</td>
+                                    
+                                    <td><a href ="{{ url_for( 'novedad_renderEdit', id = nov.id ) }}">Editar</a></td>
+                                    <td><a href ="{{ url_for('novedad_remove', id = nov.id)}}">Eliminar Novedad</a> </td>  
+                                    
                                 </tr>
                             {% endfor %}     
 
@@ -37,6 +39,4 @@
                 </div>
             </div>
             </div>
-                
-    
 {% endblock %}

@@ -95,8 +95,12 @@ app.add_url_rule("/genero/create", "genero_create", genero.create,methods=['POST
 
 #CRUD novedades
 app.add_url_rule("/novedades/new", "novedad_new", novedad.new)
+app.add_url_rule("/novedades/list", "novedad_list", novedad.list)
 app.add_url_rule("/novedades/create", "novedad_create", novedad.create,methods=['POST'])
 app.add_url_rule("/novedades", "novedad_index", novedad.index)
+app.add_url_rule("/novedades/edit/<int:id>", "novedad_renderEdit", novedad.renderEdit_novedad)
+app.add_url_rule("/novedades/edit/<int:id>", "novedad_edit", novedad.edit_novedad, methods=['POST'])
+app.add_url_rule("/novedades/remove/<int:id>", "novedad_remove", novedad.remove_novedad)
 
 #CRUD trailers
 app.add_url_rule("/trailers/new", "trailer_new", trailer.new)
