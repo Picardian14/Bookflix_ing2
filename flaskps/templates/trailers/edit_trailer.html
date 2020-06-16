@@ -1,0 +1,69 @@
+{% extends "trailers/trailerBase.html" %}
+
+{% block title %}
+    <title>Editar Trailer</title>
+{% endblock %}
+
+
+{% block navbar %}
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <nav class="nav nav-masthead justify-content-center">
+                <a class="nav-link active" href="/usuarios">Usuarios</a>
+                <a class="nav-link active" href="/usuarios/mostrar/{{user_id}}">Ver mi perfil</a>
+                {% if adm %}
+                <a class="nav-link" href="/configuracion">Configuracion</a>
+                {% endif %}
+                <a class="nav-link" href="/cerrar_sesion">Cerrar Sesion</a>
+            </nav>
+        </div>
+    </header>
+
+{% endblock %}
+
+{% block main %}
+
+    <div class="container">
+        <div class="row">
+             <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <br>
+                        <h3 class="panel-title">Editar titulo</h3>
+                        <br>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class=" col-md-20 col-lg-20 ">
+                                <div style="overflow-x:auto;">                                    
+                                    <table class="table table-user-information">
+                                        <tbody>
+                                        <form action="{{ url_for('trailer_load_edit', id=id) }}" method="POST">                                          
+                                            <tr>
+                                                <td>Titulo:</td>
+                                                <td>{{trailer.titulo}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td><label>Nuevo titulo:</label>
+                                                    <input required type="text" name="titulo">
+                                                </td>
+                                            </tr>
+                                            <tr><td></td>
+                                                <td><input  type="submit" value="Editar">
+                                                    <a href="/libros">Cancelar</a>
+                                                </td>
+                                            </tr>
+                                        </form>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+{% endblock %}

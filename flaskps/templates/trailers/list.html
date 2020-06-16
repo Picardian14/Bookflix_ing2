@@ -1,0 +1,55 @@
+{% extends "trailers/trailerBase.html" %}
+
+{% block main %}
+    
+
+
+    <div class="container">
+            <div class="row">
+                <div class="col-md-20">
+                    <div class="panel panel-primary" >
+                        <div class="panel-heading">
+                                
+                                <a class="btn btn-link" href="{{url_for('trailer_new')}}">Cargar Trailer</a>
+                            <br>
+                            <br>
+                                <h3 class="panel-title">Libros</h3>
+                        </div>
+                        <table class="table table-hover" id="dev-table" >
+                            <thead>
+                            <tr>
+                                <th>       </th>
+                                <th>ID</th>
+                                <th>Titulo</th>
+                                <th>Archivo</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+    
+                            {% for trailer in trailers[i*pag:(i+1)*pag] %}
+                            <tr>
+                                <td>  </td>
+                                <td>{{ trailer.id}}</td>
+                                <td>{{ trailer.titulo}}</td>
+                                <td>{{ trailer.archivo}}</td>
+                                <td><a href ="{{ url_for('trailer_edit', id = trailer.id)}}">Editar Trailer</a>
+                                <a href ="{{ url_for('trailer_remove', id = trailer.id)}}">Eliminar Trailer</a></td> 
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+    
+                        </table>
+                        <br>
+                    </div>
+                </div>
+            </div>
+            </div>
+                <div class="center">
+                            <div class="wrapper">
+                                    <ul class="pagination">
+                                            <li class="page-item"><a class="page-link" href="{{ url_for('book_menu', i=i-1 )}}">Previous</a></li>
+                                            <li class="page-item"><a class="page-link" href="{{ url_for('book_menu', i=i+1 )}}">Next</a></li>
+                                    </ul>
+                            </div></div>
+    
+{% endblock %}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block title %}
+        <title>Home</title>
+    {% endblock %}
+    {% block head %}
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/cover/">
+        <link href="../../static/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+        <link href="../../static/css/mediaQ.css" rel="stylesheet">
+        <link href="../../static/css/cover.css" rel="stylesheet">
+        <script src="../../static/js/__code.jquery.com_jquery-1.11.1.js"></script>
+        <script src="../../static/js/bootstrap.min.js"></script>
+        <script src="../../static/js/validateDate.js"></script>
+    {% endblock %}
+</head>
+<body class="text-center">
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    {% block navbar %}
+        <header class="masthead mb-auto">
+            <div class="inner">
+                <nav class="nav nav-masthead justify-content-center">
+                    <a class="nav-link active" href="/usuarios">Usuarios</a>
+                    <a class="nav-link active" href="/novedades">Novedades</a>
+                    <a class="nav-link active" href="/trailers">Trailers</a>
+                    <a class="nav-link active" href="/usuarios/mostrar/{{user_id}}">Ver mi perfil</a>
+                    <a class="nav-link active" href="/libros">Libros</a>
+                    <a class="nav-link" href="/configuracion">Configuracion</a>
+                    
+                    <a class="nav-link" href="/cerrar_sesion">Cerrar Sesion</a>
+                </nav>
+            </div>
+        </header>
+    {% endblock %}
+    {% block alert %}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <br>
+                <ul class=flashes>
+                    <div class="alert alert-primary" role="alert">{{ messages[-1] }}</div>
+                </ul>
+            {% endif %}
+        {% endwith %}
+    {% endblock %}
+    <main class="inner cover">
+        {% block main %}
+            <h1 class="cover-heading">{{ titulo }}</h1>
+            <img class="mb-4" src="../../static/img/logo.png">
+            <h1 class="cover-heading">{{ descripcion }}</h1>
+        {% endblock %}
+    </main>
+    <footer class="mastfoot mt-auto">
+        <div class="inner">
+            {% block footer %}
+                <p>ING 2 2020 - Grupo 21</p>
+                <p>{{mail}}</p>
+            {% endblock %}
+        </div>
+    </footer>
+</div>
+</body>
+</html>

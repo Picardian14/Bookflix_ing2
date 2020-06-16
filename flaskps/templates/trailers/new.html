@@ -1,8 +1,8 @@
-{% extends "user/userBase.html" %}
+{% extends "trailers/trailerBase.html" %}
 
 {% block title %}
 
-    <title>Nueva Trailer</title>
+    <title>Nuevo Trailer</title>
 
 {% endblock %}
 
@@ -10,11 +10,15 @@
     <header class="masthead mb-auto">
         <div class="inner">
             <nav class="nav nav-masthead justify-content-center">
-                <a class="nav-link" href="/usuarios">Cancelar</a>
+                <a class="nav-link active" href="/usuarios">Usuarios</a>
+                <a class="nav-link active" href="/usuarios/mostrar/{{user_id}}">Ver mi perfil</a>
+                {% if adm %}
+                <a class="nav-link" href="/configuracion">Configuracion</a>
+                {% endif %}
+                <a class="nav-link" href="/cerrar_sesion">Cerrar Sesion</a>
             </nav>
         </div>
     </header>
-
 {% endblock %}
 
 {% block main %}
@@ -23,22 +27,24 @@
                 <p class="text-center">Bookflix</p>
                 <p class="divider-text">
                 </p>
-                <form action="{{ url_for('trailer_create') }}" method="POST">
+                <form action="{{ url_for('trailer_create') }}" onsubmit="return validate();" method="POST" enctype="multipart/form-data">    
+
                     <div class="form-group input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                            <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
                         </div>
-                        <input required name="titulo" class="form-control" placeholder="Titulo de Trailer" type="text">
+                        <input required name="titulo" class="form-control" placeholder="Titulo del trailer" type="text">
                     </div> <!-- form-group// -->
+
                     <div class="form-group input-group">
                         <div class="input-group-prepend">
-                            <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                            <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
                         </div>
-                        <input required name="archivo" class="form-control" placeholder="descripcion de Trailer" type="file"></input>                                
+                        <input required name="archivo" class="form-control" type="file">
                     </div> <!-- form-group// -->
-                    
+                                    
                     <div class="form-group">
-                        <button type="submit" class="btn btn-light btn-block"> Crear Trailer  </button>
+                        <button type="submit" class="btn btn-light btn-block"> Cargar Trailer  </button>
                     </div> <!-- form-group// -->
                 </form>
 
