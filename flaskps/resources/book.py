@@ -94,7 +94,7 @@ def create_chapter(isbn):
                 Book.create_chapter(request.form, chapter_name,isbn)
             else:
                 flash("El capitulo  ya fue cargado")#+str(request.form['num']+
-                return redirect(url_for("book_menu"))
+                return redirect(url_for("book_new_chapter", isbn=isbn))
         
         if request.form['completo']=="True":            
             Book.mark_complete(isbn)
@@ -218,6 +218,10 @@ def load_edit_meta(isbn):
         if (request.form.get(key) != ''):
             modified = True
             break    
+    if request.form['completo']=="True":    
+            if Book.find_by_isbn(isbn) is None:
+                Book.mark_complete(isbn)
+                merger(book_data['titulo'])
     Book.updateMeta(book_data, isbn, autor_id, Editorial_id, Genero_id)
     if modified:
         flash("Datos modificados correctamente")
@@ -246,11 +250,13 @@ def date_render_book(isbn):
     Book.db = get_db()
     book = Book.find_by_isbn(isbn)
     if book is not None:
-        available_from = book['available_from']
-        available_to = book['available_to']
+        available_from = book['available_from'].strftime("%Y-%m-%d")
+        available_to = book['available_to'].strftime("%Y-%m-%d") if book['available_to'] is not None else ''
     else:
         available_from = ''
         available_to = ''
+    print(available_from)
+    print(available_to)
     adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
     return render_template('books/modificar_total.html',adm=adm, isbn=isbn, available_from=available_from, available_to=available_to)
 
@@ -258,8 +264,9 @@ def date_render_chap(isbn, num):
     print("cambiar fecha de capitulo")
     Book.db = get_db()
     book = Book.find_chapter_by_isbn(isbn, num)
-    available_from = book['available_from']
-    available_to = book['available_to']
+    available_from = book['available_from'].strftime("%Y-%m-%d")
+    available_to = book['available_to'].strftime("%Y-%m-%d") if book['available_to'] is not None else ''
+    
     adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
     return render_template('books/modificar_chap.html', adm=adm, isbn=isbn, num=num,available_from=available_from, available_to=available_to)
 
@@ -284,6 +291,7 @@ def open_book(isbn): #aca abre el libro guardado
     set_db()
     titulo = Book.find_meta_by_isbn(isbn)['titulo']
     nombre = titulo+"_Full"
+    print(nombre)
     return render_template('books/abrirlibro.html', titulo=titulo, nombre=nombre)
 
 def open_cap_menu(isbn):
@@ -319,18 +327,24 @@ def validate_date(isbn):
     complete = Book.is_complete(isbn)
     if complete:
         book = Book.find_by_isbn(isbn)
-        today = dt.datetime.now()#.strftime("%Y-%m-%d")
+        today = dt.datetime.now()#.strfstrftime("%Y-%m-%d")
         if book is None:
             caps = Book.allChapter(isbn)            
             for cap in caps:
                 if cap['available_to'] is not None and today > cap['available_to']:
                     print("Se encontro un capitulo vencido")
                     return False
+                if cap['available_from'] is not None and today < cap['available_from']:
+                    print("Se encontro un capitulo no disponible")
+                    return False
             print("Ningun Capitulo se vencio")
             return True
         else:
             if book['available_to'] is not None and today > book['available_to']:
                 print("El libro esta vencido")
+                return False
+            if book['available_from'] is not None and today < book['available_from']:
+                print("El libro aun no esta disponible")
                 return False
             else:
                 print("El libro no esta vencido")

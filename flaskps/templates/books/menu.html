@@ -25,17 +25,11 @@
                                 <th>       </th>
                                 <th>ISBN</th>
                                 <th>titulo</th>
-                                <th>Autor</th>
+                                <th>Autor</th>                                
+                                <th>                     </th>
+                                
+                                <th>                     </th>                                                                                            
                                 {% if adm %}
-                                <th>                     </th>
-                                <th>                     </th>
-                                <th>                     </th>
-                                <th>                     </th>
-                                <th>                     </th>            
-                                <th>                     </th>
-                                <th>                     </th>  
-                                <th>                     </th>                                
-                                {% else %}
                                 <th>                     </th>
                                 <th>                     </th>            
                                 {% endif %}
@@ -52,17 +46,20 @@
                                 <td>{{ book.autor_id}}</td>
                                 <td>
                                     {% if canReadBook[books.index(book)] %}
-                                        <a class="btn btn-link" href="{{url_for('book_open', isbn = book.isbn)}}">Abrir Libro</a>    
+                                        <a class="btn btn-link" href="{{url_for('book_open', isbn = book.isbn)}}">Abrir Libro</a>  
+                                    
                                     {% endif %}
                                     {% if hasChapters[books.index(book)] %}
                                         <a class="btn btn-link" href="{{url_for('book_cap_menu', isbn = book.isbn)}}">Abrir Capitulos</a>    
                                     {% endif %}
                                 </td>
-                                <td><a href ="{{ url_for('book_meta_edit', isbn = book.isbn)}}">Editar</a>
-                                <a href ="{{ url_for('book_meta_remove', isbn = book.isbn)}}">Eliminar Meta</a></td>
-                                <td><a class="btn btn-link" href="{{url_for('book_new', isbn = book.isbn)}}">Cargar Libro</a>
-                                <a class="btn btn-link" href="{{url_for('book_date_menu', isbn = book.isbn)}}">Modificar Disponibilidad</a>
-                                <a class="btn btn-link" href="{{url_for('book_new_chapter', isbn = book.isbn)}}">Cargar Capitulo</a></td>
+                                {% if adm %}
+                                    <td><a href ="{{ url_for('book_meta_edit', isbn = book.isbn)}}">Editar</a>
+                                    <a href ="{{ url_for('book_meta_remove', isbn = book.isbn)}}">Eliminar Meta</a></td>
+                                    <td><a class="btn btn-link" href="{{url_for('book_new', isbn = book.isbn)}}">Cargar Libro</a>
+                                    <a class="btn btn-link" href="{{url_for('book_date_menu', isbn = book.isbn)}}">Modificar Disponibilidad</a>
+                                    <a class="btn btn-link" href="{{url_for('book_new_chapter', isbn = book.isbn)}}">Cargar Capitulo</a></td>
+                                {% endif %}
                                 
                             </tr>
                             {% endfor %}

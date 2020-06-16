@@ -99,6 +99,9 @@ CREATE TABLE `metadato`(
   CONSTRAINT FK_metadato_genero_id FOREIGN KEY (genero_id) REFERENCES genero(id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
+
+
 DROP TABLE IF EXISTS `usuario`;
 
 CREATE TABLE `usuario` (
@@ -235,7 +238,7 @@ CREATE TABLE `usuario_tiene_rol` (
 
 LOCK TABLES `usuario_tiene_rol` WRITE;
 /*!40000 ALTER TABLE `usuario_tiene_rol` DISABLE KEYS */;
-INSERT INTO `usuario_tiene_rol` VALUES (1,1),(2,2),(3,1), (4,2);
+INSERT INTO `usuario_tiene_rol` VALUES (1,1),(2,2),(3,1);
 /*!40000 ALTER TABLE `usuario_tiene_rol` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -115,7 +115,7 @@ def hello():
         if not authenticated(session):
             return render_template('home.html', titulo=info.get('titulo'), descripcion=info.get('descripcion'), mail = info.get('mail_orquesta'))
         else:
-            return redirect(url_for("user_resource_index"))
+            return redirect(url_for("book_menu"))
     else:
         return render_template('home_inactive.html') 
      
