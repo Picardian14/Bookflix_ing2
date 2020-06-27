@@ -35,6 +35,14 @@ USE `grupo21`;
 -- Estructura de tabla para la tabla `usuario`
 --
 
+DROP TABLE IF EXISTS `historial`;
+
+CREATE TABLE `historial`(  
+  `archivo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `usuario` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `fecha_ultima` datetime DEFAULT NULL,
+  PRIMARY KEY (archivo, usuario)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `novedad`;
 

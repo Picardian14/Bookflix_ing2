@@ -33,7 +33,7 @@ def authenticate():
         del session['usuario']
         del session['permisos']
     flash("La sesión se inició correctamente.")
-    return redirect(url_for('book_menu'))
+    return redirect(url_for('book_menu', type='all'))
 
 
 def logout():

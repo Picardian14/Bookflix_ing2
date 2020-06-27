@@ -12,7 +12,7 @@ def create():
     if validate(request.form.get('nombre')):
         Autor.create(request.form)
         flash("Autor cargado")
-    return redirect(url_for("book_menu"))
+    return redirect(url_for("book_menu", type='all'))
 
 def set_db():
     Autor.db = get_db()

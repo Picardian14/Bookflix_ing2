@@ -73,8 +73,23 @@ class Book(object):
         cls.db.commit()
         return True
 
+    @classmethod
+    def record_open(cls, filename, user, date):
+        sql = "INSERT INTO historial (archivo, usuario, fecha_ultima) values (%s, %s, %s) ON DUPLICATE KEY UPDATE archivo=%s, usuario=%s, fecha_ultima=%s"
+        data = (filename, user, date, filename, user, date)
+        cursor = cls.db.cursor()
+        cursor.execute(sql, data)
+        cls.db.commit()
+        return True
     
     #GETS
+    @classmethod
+    def get_last_read(cls, user):
+        sql = "SELECT * FROM historial WHERE usuario=%s"
+        cursor = cls.db.cursor()
+        cursor.execute(sql, (user))
+        return cursor.fetchall().sort()
+
     @classmethod     
     def allMeta(cls):
         sql = 'SELECT * FROM metadato'
