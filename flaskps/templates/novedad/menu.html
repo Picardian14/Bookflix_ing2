@@ -2,16 +2,19 @@
 
 {% block main %}
     
+{% block title %}
 
+<title>Novedades</title>
 
+{% endblock %}
+
+<h1 class="panel-title">Novedades</h1>
+<br><br><br>
     <div class="container">
             <div class="row">
                 <div class="col-md-20">
                     <div class="panel panel-primary" >
                         <div class="panel-heading">
-                            {% if adm %}
-                                <a class="btn btn-link" href="{{url_for('novedad_list')}}">Ver Listado de Novedades</a>
-                            {% endif %}
                             <br><br>
                             <table class="table table-hover" id="dev-table" >
                             <tr>
@@ -38,5 +41,7 @@
             </div>
             </div>
                 
-    
+            {% if adm %}
+            <a class="btn btn-link" href="{{url_for('novedad_list')}}">Ver Listado de Novedades</a>
+        {% endif %}
 {% endblock %}

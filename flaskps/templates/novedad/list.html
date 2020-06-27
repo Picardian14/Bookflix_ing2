@@ -1,6 +1,15 @@
 {% extends "novedad/novedadBase.html" %}
 
+{% block title %}
+
+<title>Listado de Novedades</title>
+
+{% endblock %}
+
 {% block main %}
+<h1 class="panel-title">Listado de Novedades</h1>
+<br><br><br>
+
     <div class="container">
             <div class="row">
                 <div class="col-md-20">
@@ -14,13 +23,17 @@
                                 <th>Descripcion</th>
                             </tr>
                             {% for nov in novedades[i*pag:(i+1)*pag] %}
+                            <script> 
+                                var indice = 1;
+                            </script>
                                 <tr>
+                                    
                                     <td>{{nov.titulo}}</td>
                                     <td>{{nov.descripcion}}</td>
-                                    <td>{{nov.created_at}}</td>
+                                    <td style="display: block">{{nov.created_at}}</td>
 
-                                    <td>Ver Detalle</td>
-                                    
+                                    <!--<td><a href=# onclick="">Ver Detalle</a></td>-->
+
                                     <td><a href ="{{ url_for( 'novedad_renderEdit', id = nov.id ) }}">Editar</a></td>
                                     <td><a href ="{{ url_for('novedad_remove', id = nov.id)}}">Eliminar Novedad</a> </td>  
                                     

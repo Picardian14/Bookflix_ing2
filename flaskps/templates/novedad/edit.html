@@ -2,17 +2,18 @@
 
 {% block title %}
 
-    <title>Editar novedad</title>
+<title>Editar novedad</title>
 
 {% endblock %}
 
 {% block main %}
 
+<h1 class="panel-title">Editar Novedades</h1>
+<br><br><br>
     <div class="container">
         <div class="row">
              <div class="panel panel-info">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Editar Novedad</h3>
                     </div>
                     <div class="panel-body">
                         <div class="row">
@@ -23,11 +24,11 @@
                                         <form action="{{ url_for('novedad_edit', id=nov.id ) }}" method="POST">
                                             <tr>
                                                 <td>titulo:</td>
-                                                <td><input required type="text" name="titulo" value = {{nov.titulo}} placeholder={{nov.titulo}}></td>
+                                                <td><input required type="text" name="titulo" value = {{nov.titulo}} placeholder={{nov.titulo}} minlength="10"></td>
                                             </tr>
                                             <tr>
                                                 <td>descripcion:</td>
-                                                <td><input required type="text" name="descripcion" value = {{nov.descripcion}} placeholder={{nov.descripcion}}></td>
+                                                <td><input required type="text" name="descripcion" value = {{nov.descripcion}} placeholder={{nov.descripcion}} minlength="10"></td>
                                             </tr>
                                             <tr>
                                                 <td></td>
