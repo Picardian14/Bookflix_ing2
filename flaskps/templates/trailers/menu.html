@@ -46,8 +46,10 @@
                                 <td>{{ trailer.id}}</td>
                                 <td>{{ trailer.titulo}}</td>
                                 <td>{{ trailer.archivo}}</td>
+                                {% if adm %}
                                 <td><a href ="{{ url_for('trailer_edit', id = trailer.id)}}">Editar</a>
-                                <a href ="{{ url_for('trailer_remove', id = trailer.id)}}">Eliminar</a></td>        
+                                <a href ="{{ url_for('trailer_remove', id = trailer.id)}}">Eliminar</a></td>  
+                                {% endif %}      
                             </tr>
                             {% endfor %}
                             </tbody>

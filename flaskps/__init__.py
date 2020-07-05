@@ -11,6 +11,7 @@ from flaskps.resources import editorial
 from flaskps.resources import genero
 from flaskps.resources import novedad
 from flaskps.resources import trailer
+from flaskps.resources import perfil
 
 from flaskps.models.configuracion import Configuracion
 from flaskps.config import Config
@@ -65,12 +66,16 @@ app.add_url_rule("/libros/new/<string:isbn>", 'book_new', book.new)
 app.add_url_rule("/libros/<string:isbn>", 'book_create', book.create, methods=['POST'])
 app.add_url_rule("/librosnew_chapter/<string:isbn>", 'book_new_chapter', book.new_chapter)
 app.add_url_rule("/librosnew_chapter/<string:isbn>", 'book_create_chapter', book.create_chapter, methods=['POST'])
+app.add_url_rule("/librosEliminar/<string:isbn>", 'book_delete', book.delete)
+app.add_url_rule("/librosdel_chap_menu/<string:isbn>", 'book_delete_menu', book.render_delete_menu)
+app.add_url_rule("/librosdel_chap/<string:isbn>/<int:num>", 'book_delete_chap', book.delete_chapter)
+#Gestion de fechas
 app.add_url_rule("/librosfecha/<string:isbn>", 'book_date_menu', book.date_menu)
 app.add_url_rule("/librosfechabook/<string:isbn>", 'book_date_book', book.date_render_book)
 app.add_url_rule("/librosfechabook/<string:isbn>/<int:num>", 'book_date_chap', book.date_render_chap)
 app.add_url_rule("/librosfechabook/<string:isbn>", 'book_date_mod_book', book.date_book, methods=['POST'])
 app.add_url_rule("/librosfechabook/<string:isbn>/<int:num>", 'book_date_mod_chap', book.date_chap, methods=['POST'])
-
+#Metadatos
 app.add_url_rule("/libros/meta", 'book_meta', book.render_meta)
 app.add_url_rule("/libros/meta", 'book_load_meta', book.load_meta, methods=['POST'])
 app.add_url_rule("/libros/editar_meta/<string:isbn>", "book_meta_edit", book.edit_meta)
@@ -78,11 +83,12 @@ app.add_url_rule("/libros/editar_meta/<string:isbn>", "book_load_meta_edit", boo
 app.add_url_rule("/libros/eliminar/<string:isbn>", "book_meta_remove", book.remove_meta)
 #Manejo de libros
 app.add_url_rule("/libros", 'book_menu', book.render_menu, methods=['POST', 'GET'])
+app.add_url_rule("/librosHistorial", 'book_historial', book.render_historial)
 app.add_url_rule("/libros_busqueda", 'book_search', book.search, methods=['POST'])
 app.add_url_rule("/librosver/<string:isbn>", 'book_open', book.open_book)
 app.add_url_rule("/librosver_cap/<string:isbn>", 'book_cap_menu', book.open_cap_menu)
 app.add_url_rule("/librosver_cap_abrir/<string:isbn>/<int:num>", 'book_open_cap', book.open_cap)
-
+app.add_url_rule("/librosver_any/<string:isbn>/<string:name>", 'book_open_any', book.open_any)
 #CRUD autor
 app.add_url_rule("/autor/new", 'author_new', autor.new)
 app.add_url_rule("/autor/create", "author_create", autor.create,methods=['POST'])
@@ -112,7 +118,15 @@ app.add_url_rule("/trailers/edit_trailer/<int:id>", "trailer_load_edit", trailer
 app.add_url_rule("/trailer/create", 'trailer_create', trailer.render_trailer)
 app.add_url_rule("/trailer/create", 'trailer_load', trailer.load_trailer, methods=['POST'])
 
-
+#CRUD perfiles
+app.add_url_rule("/perfiles/new", "perfil_new", perfil.new)
+app.add_url_rule("/perfiles/create", "perfil_create", perfil.create,methods=['POST'])
+app.add_url_rule("/perfilesdelete/<int:id>", "perfil_delete", perfil.delete)
+app.add_url_rule("/perfiles", "perfil_menu", perfil.render_menu)
+app.add_url_rule("/perfiles/<int:id>", "perfil_select", perfil.select)
+#Cambio de Plan
+app.add_url_rule("/perfilesTopremium", "perfil_to_premium", perfil.to_premium)
+app.add_url_rule("/perfilesTobasic", "perfil_to_basic", perfil.to_basic)
 
 
 @app.route("/")

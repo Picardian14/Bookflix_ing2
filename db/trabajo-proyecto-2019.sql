@@ -34,14 +34,49 @@ USE `grupo21`;
 --
 -- Estructura de tabla para la tabla `usuario`
 --
+DROP TABLE IF EXISTS `usuario`;
+
+CREATE TABLE `usuario` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `dni` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT '0',
+  `updated_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `first_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `last_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `subscription` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `fecha` datetime DEFAULT NULL,
+  `codigo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `numero_tarjeta` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+DROP TABLE IF EXISTS `perfil`;
+
+CREATE TABLE `perfil`(  
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT FK_perfil_usuario_id FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 DROP TABLE IF EXISTS `historial`;
 
 CREATE TABLE `historial`(  
+  `isbn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `titulo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `archivo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `usuario` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `perfil_id` int(11) NOT NULL,
   `fecha_ultima` datetime DEFAULT NULL,
-  PRIMARY KEY (archivo, usuario)
+  PRIMARY KEY (archivo, perfil_id),
+  CONSTRAINT FK_historial_perfil_id FOREIGN KEY (perfil_id) REFERENCES perfil(id) ON DELETE CASCADE,
+  CONSTRAINT FK_historial_isbn FOREIGN KEY (isbn) REFERENCES metadato(isbn)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `novedad`;
@@ -110,25 +145,6 @@ CREATE TABLE `metadato`(
 
 
 
-DROP TABLE IF EXISTS `usuario`;
-
-CREATE TABLE `usuario` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `dni` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `activo` tinyint(1) NOT NULL DEFAULT '0',
-  `updated_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `first_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `last_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `subscription` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `fecha` datetime DEFAULT NULL,
-  `codigo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `numero_tarjeta` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (id)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `autor`;
 

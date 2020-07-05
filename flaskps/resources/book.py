@@ -10,6 +10,11 @@ from flaskps.models.genero import Genero
 from flaskps.helpers.mergepdf import merger
 import datetime as dt
 import os
+import re
+import shutil
+
+static_path = 'flaskps/static/uploads/'
+
 
 def search_by():
     def filter_by(criteria, name, book):
@@ -24,7 +29,8 @@ def search_by():
     return selected
 
 def history():
-    return Book.get_last_read(session['usuario']) #ACA SERIA session['perfil']
+    historial = Book.get_last_read(session['perfil']) #ACA SERIA session['perfil']    
+    return historial if historial is not None else []
 
 def render_menu():
     set_db()    
@@ -48,6 +54,37 @@ def render_menu():
         i = i - 1
     adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
     return render_template('books/menu.html', books=books, i=i, pag=pag, adm=adm, canReadBook=venc, hasChapters=hasChapters)
+
+def render_historial():
+    set_db()        
+    books = history()    
+    areChapter = []
+    availables = []
+    today = dt.datetime.now()
+    for book in books:
+        if 'cap' in book['archivo']: #Forma de saber si es un cap, o el libro entero
+            areChapter.append(True)
+            isbn = book['isbn']
+            num = int(re.search(r'\d+', book['archivo']).group(0))
+            cap = Book.find_chapter_by_isbn(isbn, num)
+            book['titulo'] = book['titulo'] + '\nCap ' + str(num)
+            canRead = cap['available_from'] < today and ((cap['available_to'] is None) or cap['available_to'] > today)
+            availables.append(canRead)
+        else:
+            areChapter.append(False)
+            bok = Book.find_by_isbn(book['isbn'])
+            canRead = validate_date(bok['isbn'])
+            availables.append(canRead)
+
+    i = int(request.args.get('i',0))
+    Configuracion.db = get_db()
+    pag=Configuracion.get_page_size()
+    if (i == -1):
+        i=0
+    elif (i*pag >= len(books)):
+        i = i - 1
+    adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
+    return render_template('books/history.html', books=books, i=i, pag=pag, adm=adm, availables=availables, areChapter=areChapter)
 
 def search():
     def filter_by(criteria, name, book):
@@ -94,15 +131,28 @@ def create(isbn): #Crea / Guarda un archivo de libro
         if request.files: 
             archivo = request.files['archivo']
             book_name = Book.find_meta_by_isbn(isbn)['titulo']  
-            if not os.path.exists('flaskps/static/uploads/'+book_name):          
-                os.mkdir('flaskps/static/uploads/'+book_name)        
-            archivo.save(os.path.join('flaskps/static/uploads/'+book_name, book_name+"_Full.pdf"))
+            if not os.path.exists(static_path+book_name):          
+                os.mkdir(static_path+book_name)        
+            archivo.save(os.path.join(static_path+book_name, book_name+"_Full.pdf"))
         Book.create(request.form, book_name+"_Full.pdf",isbn)
         Book.mark_complete(isbn)
         print(Book.is_complete(isbn))
         flash("Libro cargado")
     else:
         flash("Ya existe un libro con el mismo ISBN")
+    return redirect(url_for("book_menu"))
+
+def delete(isbn):
+    set_db()
+    filename = Book.find_by_isbn(isbn)['archivo']
+    if filename is not None and filename in os.listdir(static_path+book_name):
+        book_name = filename[:-9] #el nombre del archivo es el titulo + _full.pdf
+        os.remove(static_path+book_name+'/'+filename)
+        Book.mark_incomplete(isbn)
+        Book.delete(isbn)
+        flash("Archivo eliminado")
+    else:
+        flash("No hay un libro completo cargado")
     return redirect(url_for("book_menu"))
 
 #Creacion de capitulo
@@ -128,10 +178,10 @@ def create_chapter(isbn):
             archivo = request.files['archivo']
             book_name = Book.find_meta_by_isbn(isbn)['titulo']
             chapter_name = book_name + "_cap_"+str(request.form['num'])+".pdf"
-            if not os.path.exists('flaskps/static/uploads/'+book_name):
-                os.mkdir('flaskps/static/uploads/'+book_name)            
+            if not os.path.exists(static_path+book_name):
+                os.mkdir(static_path+book_name)            
             if validate_chapter_isbn(isbn, request.form['num']):
-                archivo.save(os.path.join('flaskps/static/uploads/'+book_name, chapter_name))
+                archivo.save(os.path.join(static_path+book_name, chapter_name))
                 Book.create_chapter(request.form, chapter_name,isbn)
             else:
                 flash("El capitulo  ya fue cargado")#+str(request.form['num']+
@@ -147,6 +197,25 @@ def create_chapter(isbn):
     print("Hizo todo")
     return redirect(url_for("book_menu"))
 
+def delete_chapter(isbn, num):
+    set_db()
+    filename = Book.find_chapter_by_isbn(isbn, num)['archivo']
+    book_name = Book.find_meta_by_isbn(isbn)['titulo']
+    if filename is not None and filename in os.listdir(static_path+book_name):
+        os.remove(static_path+book_name+'/'+filename)
+        if Book.is_complete(isbn):
+            os.remove(static_path+book_name+'/'+book_name+'_Full.pdf')
+            Book.mark_incomplete(isbn)
+        Book.delete_chapter(isbn, num)
+        flash("Archivo eliminado")
+    else:
+        flash("Algo raro paso")
+    return redirect(url_for("book_menu"))
+
+def render_delete_menu(isbn):
+    set_db()
+    chaps = Book.allChapter(isbn)
+    return render_template('books/eliminar_menu.html', isbn=isbn, capitulos=chaps)
 
 
 #crud de metadatos
@@ -275,15 +344,20 @@ def load_edit_meta(isbn):
 
 def remove_meta(isbn):
     set_db()
+    book_name = Book.find_meta_by_isbn(isbn)['titulo']
+    if os.path.isdir(static_path+book_name):
+        shutil.rmtree(static_path+book_name)
+    Book.delete(isbn)
+    Book.delete_all_chapter(isbn)
+    Book.delete_records(isbn)
     Book.deleteMeta(isbn)
+    #Va a haber que eliminar todas las rese;as, todo todo
     return redirect(url_for("book_menu"))
 
 def date_menu(isbn):
     set_db()
     capitulos = Book.allChapter(isbn)
-    libro = Book.find_by_isbn(isbn)
-    print(capitulos)
-    print(libro)
+    libro = Book.find_by_isbn(isbn)    
     return render_template('books/modificar_menu.html', isbn=isbn, capitulos=capitulos, libro=libro)
 
 def date_render_book(isbn):
@@ -330,12 +404,12 @@ def date_chap(isbn, num):
 def open_book(isbn): #aca abre el libro guardado
     print("abro")
     set_db()
-    historial = Book.get_last_read(session['usuario']) #ACA SERIA session['perfil']
+    historial = Book.get_last_read(session['perfil']) #ACA SERIA session['perfil']
     print(historial)
     titulo = Book.find_meta_by_isbn(isbn)['titulo']
     nombre = titulo+"_Full"
     print(nombre)
-    Book.record_open(nombre, session['usuario'], dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")) #ACA SERIA session['perfil']
+    Book.record_open(nombre, session['perfil'], dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), isbn, titulo) #ACA SERIA session['perfil']
     return render_template('books/abrirlibro.html', titulo=titulo, nombre=nombre)
 
 def open_cap_menu(isbn):
@@ -350,11 +424,17 @@ def open_cap_menu(isbn):
 def open_cap(isbn, num):
     print("abro capitulo")
     set_db()
-    historial = Book.get_last_read(session['usuario']) #ACA SERIA session['perfil']
+    historial = Book.get_last_read(session['perfil']) #ACA SERIA session['perfil']
     titulo = Book.find_meta_by_isbn(isbn)['titulo']
     nombre = titulo+"_cap_"+str(num)
-    Book.record_open(nombre, session['usuario'], dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")) #ACA SERIA session['perfil']
+    Book.record_open(nombre, session['perfil'], dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), isbn, titulo) #ACA SERIA session['perfil']
     return render_template('books/abrirlibro.html', titulo=titulo, nombre=nombre)
+
+def open_any(isbn, name):
+    Book.db = get_db()
+    titulo = Book.find_meta_by_isbn(isbn)['titulo']
+    Book.record_open(name, session['perfil'], dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), isbn, titulo) #ACA SERIA session['perfil'])
+    return render_template('books/abrirlibro.html', titulo=titulo, nombre=name)
 
 def validate_meta_isbn(isbn):
     book = Book.find_meta_by_isbn(isbn)

@@ -1,0 +1,75 @@
+{% extends "books/menu.html" %}
+
+{% block main %}
+    
+
+
+    <div class="container">
+            <div class="row">
+                <div class="col-md-20">
+                    <div class="panel panel-primary" >
+                        <div class="panel-heading">
+                                
+                            
+                            <br>
+                                <h3 class="panel-title">historial</h3>
+                        </div>
+                        <br>                        
+                        
+                        <br>
+                        <br>
+                        {% block tabla %}
+                        <table class="table table-hover" id="dev-table" >
+                            <thead>
+                            <tr>
+                                <th>       </th>
+                                <th>titulo</th>
+                                <th>Ultima Lectura</th>
+                                
+                                <th>                     </th>
+                                
+                                <th>                     </th>                                                                                            
+                                {% if adm %}
+                                <th>                     </th>
+                                <th>                     </th>            
+                                {% endif %}
+                                
+                            </tr>
+                            </thead>
+                            <tbody>
+                            
+                            {% for book in books[i*pag:(i+1)*pag] %}
+                            <tr>
+                                <td>  </td>                                
+                                <td>{{ book.titulo}}</td>       
+                                <td>{{ book.fecha_ultima}}</td>                                
+                                <td>
+                                    {% if availables[books.index(book)] %}
+                                        <a class="btn btn-link" href="{{url_for('book_open_any', isbn = book.isbn, name = book.archivo)}}">Abrir</a>  
+                                    
+                                    {% else %}
+                                        No Disponible
+                                    {% endif %}
+                                </td>
+                                
+                                
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+    
+                        </table>
+                        {% endblock %}
+                        <br>
+                    </div>
+                </div>
+            </div>
+            </div>
+                <div class="center">
+                            <div class="wrapper">
+                                    <ul class="pagination">
+                                            <li class="page-item"><a class="page-link" href="{{ url_for('book_menu', i=i-1 )}}">Previous</a></li>
+                                            <li class="page-item"><a class="page-link" href="{{ url_for('book_menu', i=i+1 )}}">Next</a></li>
+                                    </ul>
+                            </div></div>
+    
+{% endblock %}

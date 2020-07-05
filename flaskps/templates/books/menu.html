@@ -38,7 +38,7 @@
                             </div>
                             <button type="submit" class="btn btn-default">Buscar</button>
                         </form>
-                        <button href="{{url_for('book_menu', type='historial')}}"></button>
+                        <a href="{{url_for('book_historial')}}">Ver Historial</a>
                         <br>
                         <br>
                         {% block tabla %}
@@ -77,11 +77,21 @@
                                     {% endif %}
                                 </td>
                                 {% if adm %}
-                                    <td><a href ="{{ url_for('book_meta_edit', isbn = book.isbn)}}">Editar</a>
-                                    <a href ="{{ url_for('book_meta_remove', isbn = book.isbn)}}">Eliminar Meta</a></td>
-                                    <td><a class="btn btn-link" href="{{url_for('book_new', isbn = book.isbn)}}">Cargar Libro</a>
-                                    <a class="btn btn-link" href="{{url_for('book_date_menu', isbn = book.isbn)}}">Modificar Disponibilidad</a>
-                                    <a class="btn btn-link" href="{{url_for('book_new_chapter', isbn = book.isbn)}}">Cargar Capitulo</a></td>
+                                    <td>
+                                        <a href ="{{ url_for('book_meta_edit', isbn = book.isbn)}}">Editar</a>
+                                        <a href ="{{ url_for('book_meta_remove', isbn = book.isbn)}}" onclick="return confirm('¿seguro?')">Eliminar Meta y archivos</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-link" href="{{url_for('book_new', isbn = book.isbn)}}">Cargar Libro</a>
+                                        <a class="btn btn-link" href="{{url_for('book_date_menu', isbn = book.isbn)}}">Modificar Disponibilidad</a>
+                                        <a class="btn btn-link" href="{{url_for('book_new_chapter', isbn = book.isbn)}}">Cargar Capitulo</a>
+                                    </td>
+                                    <td>
+                                            <a class="btn btn-link" href="{{url_for('book_delete', isbn = book.isbn)}}">Eliminar Libro</a>
+                                            {% if hasChapters[books.index(book)] %}
+                                                <a class="btn btn-link" href="{{url_for('book_delete_menu', isbn = book.isbn)}}">Eliminar Capitulos</a>
+                                            {% endif %}
+                                    </td>
                                 {% endif %}
                                 
                             </tr>

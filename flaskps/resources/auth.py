@@ -1,6 +1,8 @@
 from flask import redirect, render_template, request, url_for, abort, session, flash
 from flaskps.db import get_db
+
 from flaskps.models.user_model import Usuario
+from flaskps.models.perfil import Perfil
 from flaskps.models.configuracion import Configuracion
 from flaskps.models.permits import Permit
 
@@ -15,6 +17,7 @@ def login():
 def authenticate():
     params = request.form
     set_usuario_db()
+    Perfil.db = get_db()
     usuario = Usuario.find_by_email_and_pass(params['email'], params['password'])
 
     if not usuario:
@@ -25,6 +28,7 @@ def authenticate():
         return redirect(url_for('auth_login'))
     session['usuario'] = usuario['email']
     session['usuario_id'] = usuario['id']
+    #session['perfil'] = Perfil.get_id_by_name_id(usuario['username'], usuario['id'])
     session['permisos'] = getCurrentPermits()
     Configuracion.db = get_db
     info = Configuracion.get_information()
@@ -33,14 +37,16 @@ def authenticate():
         del session['usuario']
         del session['permisos']
     flash("La sesión se inició correctamente.")
-    return redirect(url_for('book_menu', type='all'))
+    if 'configuracion_usarInhabilitado' in session['permisos']:
+        return redirect(url_for("book_menu"))
+    return redirect(url_for('perfil_menu'))
 
 
 def logout():
     del session['usuario']
     del session['permisos']
     flash("La sesión se cerró correctamente.")
-    return redirect(url_for('auth_login'))
+    return redirect("/")
 
 def getCurrentPermits():
     usuario = Usuario.find_by_email(session['usuario'])

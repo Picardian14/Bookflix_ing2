@@ -1,0 +1,31 @@
+{% extends "perfil/perfilBase.html" %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-20">
+            <div class="panel panel-primary" >
+                <div class="panel-heading">
+                        <h3 class="panel-title">Perfiles</h3>
+                </div>
+                <br>  
+                {% block main%}                      
+                    {% for perfil in perfiles %}
+                    <div>
+                        <a href="{{url_for('perfil_select', id=perfil.id)}}">{{perfil.nombre}}</a>
+                    
+                        <a onclick="return confirm('Se borrará todo el historial de {{perfil.nombre}} ¿confirma?')" href="{{url_for('perfil_delete', id=perfil.id)}}">eliminar</a>
+                        <br>
+                    </div>
+                    {% endfor %}
+                    <a href="{{url_for('perfil_new')}}">Crear Perfil</a>
+                    <br>
+                    <br>
+                    {% if esPremium %}
+                        <a onclick="return confirm('Pasará a plan basico. Sólo podrá tener 2 perfiles ¿confirma?')" href="{{url_for('perfil_to_basic')}}">Pasar a basico</a>
+                    {% else %}
+                        <a onclick="return confirm('Pasará a plan premium. La cuota aumentará ¿confirma?')" href="{{url_for('perfil_to_premium')}}">Pasar a premium</a>
+                    {% endif %}
+                    <br>
+                    <br>
+                    <a onclick="return confirm('Se borrarán todos el historiales asociados a esta cuenta ¿confirma?')" href ="{{ url_for('user_resource_delete', id = perfiles[0].usuario_id)}}">Eliminar mi cuenta</a>
+                    {% endblock %}

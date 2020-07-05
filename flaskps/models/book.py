@@ -12,6 +12,15 @@ class Book(object):
         cursor.execute(sql, data)
         cls.db.commit()
         return True
+
+    @classmethod
+    def delete(cls, isbn):
+        sql = "DELETE FROM libro WHERE isbn = %s"
+        cursor = cls.db.cursor()
+        cursor.execute(sql, isbn)
+        cls.db.commit()
+        return True
+
     
     @classmethod
     def create_chapter(cls, data, filename,isbn):
@@ -19,6 +28,22 @@ class Book(object):
         data = (data.get('num'), isbn,filename,data.get('available_from'),data.get('available_to') if data.get('available_to')!='' else None)
         cursor = cls.db.cursor()
         cursor.execute(sql, data)
+        cls.db.commit()
+        return True
+
+    @classmethod
+    def delete_chapter(cls, isbn,num):
+        sql = "DELETE FROM capitulo WHERE isbn = %s and num = %s"
+        cursor = cls.db.cursor()
+        cursor.execute(sql, (isbn, num))
+        cls.db.commit()
+        return True
+
+    @classmethod
+    def delete_all_chapter(cls, isbn):
+        sql = "DELETE FROM capitulo WHERE isbn = %s "
+        cursor = cls.db.cursor()
+        cursor.execute(sql, (isbn))
         cls.db.commit()
         return True
 
@@ -74,21 +99,32 @@ class Book(object):
         return True
 
     @classmethod
-    def record_open(cls, filename, user, date):
-        sql = "INSERT INTO historial (archivo, usuario, fecha_ultima) values (%s, %s, %s) ON DUPLICATE KEY UPDATE archivo=%s, usuario=%s, fecha_ultima=%s"
-        data = (filename, user, date, filename, user, date)
+    def record_open(cls, filename, perfil, date, isbn, titulo):
+        sql = "INSERT INTO historial (isbn, titulo,archivo, perfil_id, fecha_ultima) values (%s, %s,%s, %s, %s) ON DUPLICATE KEY UPDATE isbn=%s, titulo=%s, archivo=%s, perfil_id=%s, fecha_ultima=%s"
+        data = (isbn, titulo,filename, perfil, date, isbn, titulo,filename, perfil, date)        
         cursor = cls.db.cursor()
         cursor.execute(sql, data)
+        cls.db.commit()
+        return True
+
+    @classmethod
+    def delete_records(cls, isbn):
+        sql = "DELETE FROM historial WHERE isbn = %s"
+        cursor = cls.db.cursor()
+        cursor.execute(sql, isbn)
         cls.db.commit()
         return True
     
     #GETS
     @classmethod
-    def get_last_read(cls, user):
-        sql = "SELECT * FROM historial WHERE usuario=%s"
+    def get_last_read(cls, perfil):
+        sql = "SELECT * FROM historial WHERE perfil_id=%s"
         cursor = cls.db.cursor()
-        cursor.execute(sql, (user))
-        return cursor.fetchall().sort()
+        cursor.execute(sql, (perfil))
+        books = cursor.fetchall()
+        if books != ():
+            books.sort(key=lambda b: b['fecha_ultima'], reverse=True)# if books != () else None
+        return books
 
     @classmethod     
     def allMeta(cls):
@@ -136,6 +172,14 @@ class Book(object):
         sql = 'UPDATE metadato SET completo = %s WHERE isbn = %s'
         cursor = cls.db.cursor()
         cursor.execute(sql, ('1',isbn))
+        cls.db.commit()
+        return True
+
+    @classmethod
+    def mark_incomplete(cls, isbn):
+        sql = 'UPDATE metadato SET completo = %s WHERE isbn = %s'
+        cursor = cls.db.cursor()
+        cursor.execute(sql, ('0',isbn))
         cls.db.commit()
         return True
 
