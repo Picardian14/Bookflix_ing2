@@ -65,6 +65,16 @@ CREATE TABLE `perfil`(
   CONSTRAINT FK_perfil_usuario_id FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+DROP TABLE IF EXISTS `favorito`;
+
+CREATE TABLE `favorito`(  
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `isbn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `perfil_id` int(11) NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT FK_favorito_perfil_id FOREIGN KEY (perfil_id) REFERENCES perfil(id) ON DELETE CASCADE,
+  CONSTRAINT FK_favorito_isbn FOREIGN KEY (isbn) REFERENCES libro(isbn)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `historial`;
 
@@ -78,6 +88,7 @@ CREATE TABLE `historial`(
   CONSTRAINT FK_historial_perfil_id FOREIGN KEY (perfil_id) REFERENCES perfil(id) ON DELETE CASCADE,
   CONSTRAINT FK_historial_isbn FOREIGN KEY (isbn) REFERENCES metadato(isbn)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 DROP TABLE IF EXISTS `novedad`;
 

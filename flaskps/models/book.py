@@ -191,3 +191,13 @@ class Book(object):
         status = cursor.fetchone()['completo']
         print(status)
         return status==1
+
+    @classmethod     
+    def allFavorites(cls, id, isbn):
+        sql = 'SELECT * FROM favorito WHERE perfil_id = %s and isbn = %s'
+        cursor = cls.db.cursor()
+        cursor.execute(sql, (id))  
+        favs = cursor.fetchall()   
+        for fav in favs:
+            fav['autor_id'] = Autor.find_by_id(meta['autor_id'])['nombre']
+        return favs
