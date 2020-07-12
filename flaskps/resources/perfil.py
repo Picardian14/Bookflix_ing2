@@ -18,6 +18,15 @@ def select(id):
     return redirect(url_for("book_menu"))
 
 def new():    
+    set_db()
+    perfiles = Perfil.all_with_id(session['usuario_id'])
+    plan = Usuario.find_by_id(session['usuario_id'])['subscription']
+    if plan == 'basic' and len(perfiles)==2: # es una mierda este codigo, lo se
+        flash("Su plan no permite más perfiles")
+        return redirect(url_for("perfil_menu"))
+    if plan == 'premium' and len(perfiles)==4:
+        flash("No se puede tener más de 4 perfiles")
+        return redirect(url_for("perfil_menu"))    
     return render_template("perfil/new.html")
 
 def create():
@@ -59,9 +68,9 @@ def to_basic():
     perfiles = Perfil.all_with_id(session['usuario_id'])
     plan = Usuario.find_by_id(session['usuario_id'])['subscription']    
     if plan == 'premium' and len(perfiles)>2: # es una mierda este codigo, lo se
-        flash("No puede tener mas de 2 perfiles si pasa a basico. Elimine los necesarioss")
+        flash("No puede tener mas de 2 perfiles si pasa a basico. Elimine los necesarios")
         return redirect(url_for("perfil_menu"))
-    Usuario.toPremium(session['usuario_id'])
+    Usuario.toBasic(session['usuario_id'])
     return redirect(url_for("perfil_menu"))
     
     
