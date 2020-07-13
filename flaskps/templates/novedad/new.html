@@ -1,4 +1,5 @@
-{% extends "user/userBase.html" %}
+{% extends "novedad/list.html" %}
+
 
 {% block title %}
 
@@ -6,20 +7,10 @@
 
 {% endblock %}
 
-{% block navbar %}
-    <header class="masthead mb-auto">
-        <div class="inner">
-            <nav class="nav nav-masthead justify-content-center">
-                <a class="nav-link" href="/usuarios">Cancelar</a>
-            </nav>
-        </div>
-    </header>
-
-{% endblock %}
 
 {% block main %}
 
-    <h4 class="card-title mt-3 text-center">Ingrese sus datos</h4>
+    <h4 class="card-title mt-3 text-center">Ingrese datos de la novedad</h4>
                 <p class="text-center">Bookflix</p>
                 <p class="divider-text">
                 </p>
@@ -28,18 +19,19 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"> <i class="fa fa-user"></i> </span>
                         </div>
-                        <input required name="titulo" class="form-control" placeholder="Titulo de Novedad" type="text">
+                        <input required name="titulo" class="form-control" placeholder="Titulo de Novedad" type="text" minlength="10">
                     </div> <!-- form-group// -->
                     <div class="form-group input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"> <i class="fa fa-user"></i> </span>
                         </div>
-                        <textarea required name="descripcion" class="form-control" placeholder="descripcion de Novedad" ></textarea>                                
+                        <textarea required name="descripcion" class="form-control" placeholder="descripcion de Novedad" minlength="10"></textarea>  
+                        <input type="hidden" name="created_at" class="form-control" placeholder="Fecha creacion" type="date" value="{{today}}">                           
                     </div> <!-- form-group// -->
                     
                     <div class="form-group">
                         <button type="submit" class="btn btn-light btn-block"> Crear Novedad  </button>
                     </div> <!-- form-group// -->
                 </form>
-
+                <br><br><a class="nav-link" href="/usuarios">Cancelar</a>
 {% endblock %}

@@ -1,6 +1,7 @@
 from flask import redirect, render_template, request, url_for, session, abort, flash
 from flaskps.db import get_db
 from flaskps.models.configuracion import Configuracion
+from flaskps.models.user_model import Usuario
 from flaskps.helpers.auth import authenticated
 
 
@@ -61,4 +62,20 @@ def editarInformacion():  #edita la informacion
 
 def set_db():
     Configuracion.db = get_db()
+
+# def renderlistadoUsuarios(): 
+#     if not authenticated(session):
+#     abort(401) 
+
+
+#     return render_template('config/listadoUsuarios.html' )
+
+# def renderlistadoVisitas(): 
+#     if not authenticated(session):
+#     abort(401) 
+
+
+#     return render_template('config/listadoVisitas.html')
+
+
 

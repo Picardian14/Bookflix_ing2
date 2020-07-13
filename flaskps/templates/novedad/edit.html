@@ -1,0 +1,51 @@
+{% extends "novedad/list.html" %}
+
+{% block title %}
+
+<title>Editar novedad</title>
+
+{% endblock %}
+
+{% block main %}
+
+<h1 class="panel-title">Editar Novedades</h1>
+<br><br><br>
+    <div class="container">
+        <div class="row">
+             <div class="panel panel-info">
+                    <div class="panel-heading">
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class=" col-md-20 col-lg-20 ">
+                                <div style="overflow-x:auto;">
+                                    <table class="table table-user-information">
+                                        <tbody>
+                                        <form action="{{ url_for('novedad_edit', id=nov.id ) }}" method="POST">
+                                            <tr>
+                                                <td>titulo:</td>
+                                                <td><input required type="text" name="titulo" value = {{nov.titulo}} placeholder={{nov.titulo}} minlength="10"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>descripcion:</td>
+                                                <td><input required type="text" name="descripcion" value = {{nov.descripcion}} placeholder={{nov.descripcion}} minlength="10"></td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td><input required type="submit" value="Editar">
+                                                    <a href="/novedades/list">Cancelar</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+{% endblock %}

@@ -1,20 +1,21 @@
 {% extends "novedad/novedadBase.html" %}
 
-{% block main %}
-    
 {% block title %}
 
-<title>Novedades</title>
+<title>Listado de Novedades</title>
 
 {% endblock %}
 
-<h1 class="panel-title">Novedades</h1>
+{% block main %}
+<h1 class="panel-title">Listado de Novedades</h1>
 <br><br><br>
+
     <div class="container">
             <div class="row">
                 <div class="col-md-20">
                     <div class="panel panel-primary" >
                         <div class="panel-heading">
+                            <a class="btn btn-link" href="{{url_for('novedad_new')}}">Cargar Novedad</a>
                             <br><br>
                             <table class="table table-hover" id="dev-table" >
                             <tr>
@@ -22,9 +23,20 @@
                                 <th>Descripcion</th>
                             </tr>
                             {% for nov in novedades[i*pag:(i+1)*pag] %}
+                            <script> 
+                                var indice = 1;
+                            </script>
                                 <tr>
+                                    
                                     <td>{{nov.titulo}}</td>
                                     <td>{{nov.descripcion}}</td>
+                                    <td style="display: block">{{nov.created_at}}</td>
+
+                                    <!--<td><a href=# onclick="">Ver Detalle</a></td>-->
+
+                                    <td><a href ="{{ url_for( 'novedad_renderEdit', id = nov.id ) }}">Editar</a></td>
+                                    <td><a href ="{{ url_for('novedad_remove', id = nov.id)}}">Eliminar Novedad</a> </td>  
+                                    
                                 </tr>
                             {% endfor %}     
 
@@ -40,8 +52,4 @@
                 </div>
             </div>
             </div>
-                
-            {% if adm %}
-            <a class="btn btn-link" href="{{url_for('novedad_list')}}">Ver Listado de Novedades</a>
-        {% endif %}
 {% endblock %}
