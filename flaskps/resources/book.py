@@ -177,6 +177,7 @@ def render_historial():
     return render_template('books/history.html', books=books, i=i, pag=pag, user_id=user_id,adm=adm, availables=availables, areChapter=areChapter)
 
 
+
 def search():
     def filter_by(criteria, name, book):
         return name in book[criteria].lower()
@@ -607,6 +608,16 @@ def validate_date(isbn):
         print("Aun no se cargo el libro")
         return False
 
+
+
+def render_favoritos():
+    set_db()        
+    books = Book.allFavorites() 
+    i = int(request.args.get('i',0))
+    Configuracion.db = get_db()
+    pag = Configuracion.get_page_size()  
+    adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
+    return render_template('books/favorites.html', books=books, i=i, pag=pag, adm=adm) 
 
 def set_db():
     Book.db = get_db()

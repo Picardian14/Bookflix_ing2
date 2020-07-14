@@ -88,6 +88,15 @@ CREATE TABLE `perfil`(
   CONSTRAINT FK_perfil_usuario_id FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
+LOCK TABLES `perfil` WRITE;
+/*!40000 ALTER TABLE `perfil` DISABLE KEYS */;
+INSERT INTO `perfil` VALUES (1,1,'Ivanoide');
+
+/*!40000 ALTER TABLE `perfil` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
 DROP TABLE IF EXISTS `historial`;
 CREATE TABLE `historial`(  
   `isbn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -150,8 +159,8 @@ CREATE TABLE `metadato`(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-DROP TABLE IF EXISTS `favoritos`;
-CREATE TABLE `favoritos`(
+DROP TABLE IF EXISTS `favorito`;
+CREATE TABLE `favorito`(
 	`id` int(11) NOT NULL auto_increment,
     `isbn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
     `usuario_id` INT NOT NULL,
@@ -161,7 +170,6 @@ CREATE TABLE `favoritos`(
     CONSTRAINT FK_favoritos_isbn FOREIGN KEY (isbn) REFERENCES metadato(isbn),
     CONSTRAINT FK_favoritos_usuario_id FOREIGN KEY (usuario_id) REFERENCES usuario(id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 
 
 DROP TABLE IF EXISTS `autor`;
@@ -194,6 +202,37 @@ INSERT INTO `usuario` VALUES (3,'martin@gmail.com','33123123','lorenzo','1234',1
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
+LOCK TABLES `autor` WRITE;
+/*!40000 ALTER TABLE `metadato` DISABLE KEYS */;
+INSERT INTO `autor` VALUES (1,'Tolkien');
+INSERT INTO `autor` VALUES (2,'Stephen king');
+INSERT INTO `autor` VALUES (3,'Michael Bay');
+/*!40000 ALTER TABLE `metadato` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `editorial` WRITE;
+/*!40000 ALTER TABLE `metadato` DISABLE KEYS */;
+INSERT INTO `editorial` VALUES (1,'Lex');
+INSERT INTO `editorial` VALUES (2,'Planeta');
+INSERT INTO `editorial` VALUES (3,'SM');
+/*!40000 ALTER TABLE `metadato` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `genero` WRITE;
+/*!40000 ALTER TABLE `metadato` DISABLE KEYS */;
+INSERT INTO `genero` VALUES (1,'Fantasia');
+INSERT INTO `genero` VALUES (2,'Terror');
+INSERT INTO `genero` VALUES (3,'Accion');
+/*!40000 ALTER TABLE `metadato` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `metadato` WRITE;
+/*!40000 ALTER TABLE `metadato` DISABLE KEYS */;
+INSERT INTO `metadato` VALUES ('1234','libro de prueba',1,'sinopsis de prueba 1',1,1,0);
+INSERT INTO `metadato` VALUES ('12345','libro de prueba 2',2,'sinopsis de prueba 2',2,2,0);
+INSERT INTO `metadato` VALUES ('123456','libro de prueba 3',3,'sinopsis de prueba 3',3,3,0);
+/*!40000 ALTER TABLE `metadato` ENABLE KEYS */;
+UNLOCK TABLES;
 
 LOCK TABLES `perfil` WRITE;
 /*!40000 ALTER TABLE `perfil` DISABLE KEYS */;
