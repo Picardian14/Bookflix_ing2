@@ -6,81 +6,63 @@
 
 {% endblock %}
 
-
-
 {% block main %}
-
-    <div class="container">
-        <div class="row">
-             <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Editar usuario</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class=" col-md-20 col-lg-20 ">
-                                <div style="overflow-x:auto;">
-                                    <table class="table table-user-information">
-                                        <tbody>
-                                        <form action="{{ url_for('user_resource_execute_edit', id = usuario.id) }}" method="POST">
-                                            <tr>
-                                                <td>Usuario:</td>
-                                                <td><input required type="text" name="username" value = {{usuario.username}} placeholder={{usuario.username}}></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Correo:</td>
-                                                <td><input required type="email" name="email" value = {{usuario.email}} placeholder={{usuario.email}}></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Nombre:</td>
-                                                <td><input required type="text" name="first_name" value = {{usuario.first_name}} placeholder={{usuario.first_name}}></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Apellido:</td>
-                                                <td><input required type="text" name="last_name" value = {{usuario.last_name}} placeholder={{usuario.last_name}}></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Clave:</td>
-                                                <td><input required type="text" name="password" value = {{usuario.password}} placeholder={{usuario.password}}></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Subscripcion:</td>
-                                                <td><input required type="text" name="subscription" value = {{usuario.subscription}} placeholder={{usuario.subscription}}></td>
-                                            </tr>
-                                            <br>
-                                            <h6>Datos de Tarjeta</h6>
-                                            <tr>
-                                                <td>Numero de Tarjeta:</td>
-                                                <td><input required type="text" name="numero_tarjeta" value = {{usuario.numero_tarjeta}} placeholder={{usuario.numero_tarjeta}} minlength="16" maxlength="16"></td>
-                                            </tr>
-                                            <tr>
-                                                <td>DNI:</td>
-                                                <td><input required type="text" name="dni" value = {{usuario.dni}} placeholder={{usuario.dni}}></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Codigo:</td>
-                                                <td><input required type="text" name="codigo" value = {{usuario.codigo}} placeholder={{usuario.codigo}}></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Fecha de Vencimiento:</td>
-                                                <td><input required type="month" name="fecha" value = {{usuario.fecha}} placeholder={{usuario.fecha}}></td>
-                                            </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td><input required type="submit" value="Editar">
-                                                    <a href="/">Cancelar</a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                </div>
-            </div>
-        </div>
-
+<div class="latestBooks loginView">
+    <h1><i class="fa fa-user-edit" aria-hidden="true"></i> Editar usuario:</h1>
+    <div class="registro_content loginView">
+        <form action="{{ url_for('user_resource_execute_edit', id = usuario.id) }}" method="POST">
+            <table class="table table-user-information">
+                <tbody>
+                    <tr>
+                        <td>Usuario:</td>
+                        <td><input required type="text" name="username" value = {{usuario.username}} placeholder={{usuario.username}}></td>
+                    </tr>
+                    <tr>
+                        <td>Correo:</td>
+                        <td><input required type="email" name="email" value = {{usuario.email}} placeholder={{usuario.email}}></td>
+                    </tr>
+                    <tr>
+                        <td>Nombre:</td>
+                        <td><input required type="text" name="first_name" value = {{usuario.first_name}} placeholder={{usuario.first_name}}></td>
+                    </tr>
+                    <tr>
+                        <td>Apellido:</td>
+                        <td><input required type="text" name="last_name" value = {{usuario.last_name}} placeholder={{usuario.last_name}}></td>
+                    </tr>
+                    <tr>
+                        <td>Clave:</td>
+                        <td><input required type="password" name="password" value = {{usuario.password}} placeholder={{usuario.password}}></td>
+                    </tr>
+                    <tr>
+                        <td>Subscripcion:</td><td>{{usuario.subscription}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br><br>
+            <h2 style="border-bottom: 0px!important;">Datos de Tarjeta</h6>
+            <table class="table table-user-information">
+                <tbody>
+                    <tr>
+                        <td>Numero de Tarjeta:</td>
+                        <td><input required type="text" name="numero_tarjeta" value = {{usuario.numero_tarjeta}} placeholder={{usuario.numero_tarjeta}} minlength="16" maxlength="16"></td>
+                    </tr>
+                    <tr>
+                        <td>DNI:</td>
+                        <td><input required type="text" name="dni" value = {{usuario.dni}} placeholder={{usuario.dni}}></td>
+                    </tr>
+                    <tr>
+                        <td>Codigo:</td>
+                        <td><input required type="password" name="codigo" value = {{usuario.codigo}} placeholder={{usuario.codigo}}></td>
+                    </tr>
+                    <tr>
+                        <td>Fecha de Vencimiento:</td>
+                        <td><input required type="month" name="fecha" value = {{usuario.fecha}} placeholder={{usuario.fecha}}></td>
+                    </tr>
+                </tbody>
+            </table> 
+            <input required type="submit" value="Editar">
+        </form>
+        <a href="/">Cancelar</a>                                                   
+    </div>
+</div>
 {% endblock %}

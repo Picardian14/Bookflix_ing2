@@ -35,4 +35,3 @@ class Perfil(object):
         cursor = cls.db.cursor()
         cursor.execute(sql, (name, id))
         return cursor.fetchone()
-

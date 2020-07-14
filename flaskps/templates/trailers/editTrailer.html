@@ -1,0 +1,33 @@
+{% extends "/user/index.html" %}
+
+{% block title %}
+
+    <title>Editar Trailer</title>
+
+{% endblock %}
+
+
+
+{% block main %}
+<div class="latestBooks metaView">
+    <h1>Editar metadatos del trailer {{t.titulo}}:</h1>
+    <form method="POST" action="{{ url_for('trailer_load_edit', tID = id) }}" enctype="multipart/form-data">
+        <div class="form-group input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="fa fa-align-justify"></i> </span>
+            </div>
+            <input type="text" placeholder="Titulo" class="form-control" name="titulo">
+        </div>
+        <div class="form-group input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="fa fa-file-pdf"></i> </span>
+            </div>
+            <input name="archivo" class="form-control"type="file"></input>                                
+        </div> <!-- form-group// -->
+        <div class="form-group">
+            <button type="submit" class="btn btn-light btn-block">Modificar Trailer</button>
+            <center><a href="/libros">Cancelar</a></center>
+        </div> <!-- form-group// -->
+    </form>                             
+</div>
+{% endblock %}

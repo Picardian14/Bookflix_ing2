@@ -6,6 +6,7 @@ from flaskps.models.book import Book
 from flaskps.models.autor import Autor
 from flaskps.models.editorial import Editorial
 from flaskps.models.genero import Genero
+from flaskps.models.comentario import Comentario
 
 from flaskps.helpers.mergepdf import merger
 import datetime as dt
@@ -15,6 +16,88 @@ import shutil
 
 static_path = 'flaskps/static/uploads/'
 
+
+def new_favorite(isbn):
+    set_db()
+    user_id= session['usuario_id']
+    perfil_id = session['perfil_id']
+    Book.marcarFavorito(isbn, user_id, perfil_id)
+    flash("Libro añadido a favoritos.")
+    return redirect(url_for("book_view", isbn=isbn))
+
+
+def quit_favorite(isbn):
+    set_db()
+    user_id= sesssion['perfil_id']#session['usuario_id']
+    Book.deleteFavorito(isbn, user_id)
+    flash("Libro quitado de favoritos.")
+    return redirect(url_for("book_view", isbn=isbn))
+
+
+def render_favoritos():
+    set_db()
+    user_id = session['perfil_id']# session['usuario_id']
+    favoritos = Book.getFavoritos(user_id)
+    adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
+    return render_template('books/favoritoView.html', fav=favoritos, adm=adm, user_id=user_id)
+
+#Muestra de libros
+def book_view(isbn):
+    set_db()
+    venc = validate_date(isbn)
+    meta = Book.find_meta_by_isbn(isbn)
+    hasChapters = Book.allChapter(meta['isbn'])!=()
+    autor = Autor.find_by_id(meta['autor_id'])['nombre']
+    editorial = Editorial.find_by_id(meta['editorial_id'])['nombre']
+    genero = Genero.find_by_id(meta['genero_id'])['nombre']
+    coso = Book.getByISBN(isbn)
+    user_id = session['perfil_id']#session['usuario_id']
+    usuarios = Book.allUsers()
+    esFavorito = Book.esFavorito(isbn, user_id)
+    return render_template('/books/librosview.html', favorito=esFavorito, meta = meta, users=usuarios, comentarios=coso,autor =autor, editorial = editorial, genero = genero, canReadBook=venc, hasChapters=hasChapters,user_id=user_id)
+
+
+def comment_book(isbn):
+    set_db()
+    user_id = session['usuario_id']
+    perfil_id = session['perfil_id']
+    if request.method == "POST":
+        today = dt.datetime.now()
+        if request.form['comentario']:
+            coso = request.form['comentario']
+            if request.form['select']:
+                puntuacion = request.form.get('select')
+            Book.comment_book(coso,isbn,puntuacion,today,user_id, perfil_id)
+            flash("comentario publicado exitosamente")
+        else:
+            if request.form['select']:
+                puntuacion = request.form.get('select')
+                Book.setPuntuacion(isbn,puntuacion,today,user_id, perfil_id)
+                flash("comentario publicado exitosamente")
+        venc = validate_date(isbn)
+        meta = Book.find_meta_by_isbn(isbn)
+        hasChapters = Book.allChapter(meta['isbn'])!=()
+        autor = Autor.find_by_id(meta['autor_id'])['nombre']
+        editorial = Editorial.find_by_id(meta['editorial_id'])['nombre']
+        genero = Genero.find_by_id(meta['genero_id'])['nombre']
+        coso = Book.getByISBN(isbn)
+        usuarios = Book.allUsers()
+    return render_template('/books/librosview.html', meta = meta, users=usuarios, comentarios=coso,autor =autor, editorial = editorial, genero = genero, canReadBook=venc, hasChapters=hasChapters,user_id=user_id)
+    #return redirect(url_for("book_menu"))
+
+
+def delete_comment(isbn, idCom):
+    set_db()
+    Book.deleteComment(idCom)
+    flash("Comentario eliminado exitosamente")
+    return redirect(url_for("book_view", isbn=isbn))
+
+
+def is_spoiler(isbn, idCom):
+    set_db()
+    Book.isSpoiler(idCom)
+    flash("Comentario marcado exitosamente")
+    return redirect(url_for("book_view", isbn=isbn))
 
 def search_by():
     def filter_by(criteria, name, book):
@@ -32,6 +115,7 @@ def history():
     historial = Book.get_last_read(session['perfil']) #ACA SERIA session['perfil']    
     return historial if historial is not None else []
 
+
 def render_menu():
     set_db()    
     book_for={}
@@ -42,8 +126,11 @@ def render_menu():
     books = book_for[book_type]()
     venc = list(map(lambda meta: validate_date(meta['isbn']), books))
     hasChapters = list(map(lambda meta: Book.allChapter(meta['isbn'])!=(), books))
+    existe = list(map(lambda meta: Book.existeTrailer(meta['isbn']), books))
     print("Lista de tiene capitulos")
     print(hasChapters)
+    trailers= Book.getTrailers()
+    user_id= session['usuario_id']
 
     i = int(request.args.get('i',0))
     Configuracion.db = get_db()
@@ -53,7 +140,9 @@ def render_menu():
     elif (i*pag >= len(books)):
         i = i - 1
     adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
-    return render_template('books/menu.html', books=books, i=i, pag=pag, adm=adm, canReadBook=venc, hasChapters=hasChapters)
+    return render_template('books/menu.html', books=books, i=i, pag=pag, adm=adm, canReadBook=venc, user_id=user_id,trailers=trailers,hasChapters=hasChapters,existe=existe)
+
+
 
 def render_historial():
     set_db()        
@@ -84,7 +173,9 @@ def render_historial():
     elif (i*pag >= len(books)):
         i = i - 1
     adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
-    return render_template('books/history.html', books=books, i=i, pag=pag, adm=adm, availables=availables, areChapter=areChapter)
+    user_id=session['usuario_id']
+    return render_template('books/history.html', books=books, i=i, pag=pag, user_id=user_id,adm=adm, availables=availables, areChapter=areChapter)
+
 
 def search():
     def filter_by(criteria, name, book):
@@ -107,7 +198,10 @@ def search():
     elif (i*pag >= len(books)):
         i = i - 1
     adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
-    return render_template('books/menu.html', books=selected, i=i, pag=pag, adm=adm, canReadBook=venc, hasChapters=hasChapters)
+    user_id=session['usuario_id']
+    return render_template('books/menu.html', books=selected, i=i, pag=pag, adm=adm, user_id=user_id, canReadBook=venc, hasChapters=hasChapters)
+
+
 
 #creacion de libros
 def new(isbn):
@@ -117,13 +211,15 @@ def new(isbn):
         if(caps==()):
             titulo = Book.find_meta_by_isbn(isbn)['titulo']
             today = dt.datetime.now().strftime("%Y-%m-%d")
-            return render_template('books/new.html', isbn=isbn, titulo=titulo, today=today)
+            user_id=session['usuario_id']
+            return render_template('books/new.html', isbn=isbn, titulo=titulo, today=today, user_id=user_id)
         else:
             flash("Ya se han cargado capitulos")
     else:
         flash("Ya hay un libro cargado")
     return redirect(url_for("book_menu"))
     
+
 
 def create(isbn): #Crea / Guarda un archivo de libro
     set_db()
@@ -145,8 +241,8 @@ def create(isbn): #Crea / Guarda un archivo de libro
 def delete(isbn):
     set_db()
     filename = Book.find_by_isbn(isbn)['archivo']
+    book_name = filename[:-9] #el nombre del archivo es el titulo + _full.pdf
     if filename is not None and filename in os.listdir(static_path+book_name):
-        book_name = filename[:-9] #el nombre del archivo es el titulo + _full.pdf
         os.remove(static_path+book_name+'/'+filename)
         Book.mark_incomplete(isbn)
         Book.delete(isbn)
@@ -155,13 +251,16 @@ def delete(isbn):
         flash("No hay un libro completo cargado")
     return redirect(url_for("book_menu"))
 
+
+
 #Creacion de capitulo
 def new_chapter(isbn):
     set_db()
     if not Book.is_complete(isbn):
         titulo = Book.find_meta_by_isbn(isbn)['titulo']
         today = dt.datetime.now().strftime("%Y-%m-%d")
-        return render_template('books/new_chapter.html', isbn=isbn, titulo=titulo, today=today)
+        user_id=session['usuario_id']
+        return render_template('books/new_chapter.html', user_id=user_id,isbn=isbn, titulo=titulo, today=today)
     else:
         if validate_book_isbn(isbn):
             flash("Ya se cargaron todos los capitulos")
@@ -173,7 +272,8 @@ def new_chapter(isbn):
 def create_chapter(isbn):
     set_db()
     print("Crea cap")
-    if not Book.is_complete(isbn):    
+    if not Book.is_complete(isbn):
+        user_id=session['usuario_id']    
         if request.files: 
             archivo = request.files['archivo']
             book_name = Book.find_meta_by_isbn(isbn)['titulo']
@@ -185,7 +285,7 @@ def create_chapter(isbn):
                 Book.create_chapter(request.form, chapter_name,isbn)
             else:
                 flash("El capitulo  ya fue cargado")#+str(request.form['num']+
-                return redirect(url_for("book_new_chapter", isbn=isbn))
+                return redirect(url_for("book_new_chapter", isbn=isbn, user_id=user_id))
         
         if request.form['completo']=="True":            
             Book.mark_complete(isbn)
@@ -215,7 +315,10 @@ def delete_chapter(isbn, num):
 def render_delete_menu(isbn):
     set_db()
     chaps = Book.allChapter(isbn)
-    return render_template('books/eliminar_menu.html', isbn=isbn, capitulos=chaps)
+    user_id=session['usuario_id']
+    return render_template('books/eliminar_menu.html', isbn=isbn, capitulos=chaps, user_id=user_id)
+
+
 
 
 #crud de metadatos
@@ -224,7 +327,8 @@ def render_meta():
     autores = list(map(lambda autor: autor['nombre'],Autor.all()))
     editoriales = list(map(lambda editorial: editorial['nombre'],Editorial.all()))
     generos = list(map(lambda genero: genero['nombre'],Genero.all()))
-    return render_template('books/new_meta.html', autores=autores, editoriales=editoriales, generos=generos)
+    user_id=session['usuario_id']
+    return render_template('books/new_meta.html', autores=autores, editoriales=editoriales, generos=generos, user_id=user_id)
 
 def load_meta():
     set_db()
@@ -274,7 +378,8 @@ def edit_meta(isbn):
     book['editorial'] = Editorial.find_by_id(book['editorial_id'])['nombre']
     book['genero'] = Genero.find_by_id(book['genero_id'])['nombre']
     print(book)
-    return render_template('books/edit_meta.html',book=book, isbn=isbn, autores=autores, editoriales=editoriales, generos=generos)
+    user_id=session['usuario_id']
+    return render_template('books/edit_meta.html',book=book, user_id=user_id, isbn=isbn, autores=autores, editoriales=editoriales, generos=generos)
 
 def load_edit_meta(isbn):
     set_db()
@@ -350,15 +455,19 @@ def remove_meta(isbn):
     Book.delete(isbn)
     Book.delete_all_chapter(isbn)
     Book.delete_records(isbn)
+    Book.deleteCommentByISBN(isbn)
+    Book.deleteFavoritoByISBN(isbn)
     Book.deleteMeta(isbn)
     #Va a haber que eliminar todas las rese;as, todo todo
     return redirect(url_for("book_menu"))
 
+
 def date_menu(isbn):
     set_db()
     capitulos = Book.allChapter(isbn)
-    libro = Book.find_by_isbn(isbn)    
-    return render_template('books/modificar_menu.html', isbn=isbn, capitulos=capitulos, libro=libro)
+    libro = Book.find_by_isbn(isbn)  
+    user_id=session['usuario_id']  
+    return render_template('books/modificar_menu.html', user_id=user_id, isbn=isbn, capitulos=capitulos, libro=libro)
 
 def date_render_book(isbn):
     print("cambiar fecha de todo")
@@ -373,7 +482,8 @@ def date_render_book(isbn):
     print(available_from)
     print(available_to)
     adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
-    return render_template('books/modificar_total.html',adm=adm, isbn=isbn, available_from=available_from, available_to=available_to)
+    user_id=session['usuario_id']
+    return render_template('books/modificar_total.html',adm=adm, isbn=isbn, user_id=user_id,available_from=available_from, available_to=available_to)
 
 def date_render_chap(isbn, num):
     print("cambiar fecha de capitulo")
@@ -383,7 +493,20 @@ def date_render_chap(isbn, num):
     available_to = book['available_to'].strftime("%Y-%m-%d") if book['available_to'] is not None else ''
     
     adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
-    return render_template('books/modificar_chap.html', adm=adm, isbn=isbn, num=num,available_from=available_from, available_to=available_to)
+    user_id=session['usuario_id']
+    return render_template('books/modificar_chap.html', adm=adm, user_id=user_id,isbn=isbn, num=num,available_from=available_from, available_to=available_to)
+
+
+def date_render_chap(isbn, num):
+    print("cambiar fecha de capitulo")
+    Book.db = get_db()
+    book = Book.find_chapter_by_isbn(isbn, num)
+    available_from = book['available_from'].strftime("%Y-%m-%d")
+    available_to = book['available_to'].strftime("%Y-%m-%d") if book['available_to'] is not None else ''
+    
+    adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
+    user_id=session['usuario_id']
+    return render_template('books/modificar_chap.html', adm=adm, isbn=isbn, user_id=user_id, num=num,available_from=available_from, available_to=available_to)
 
 def date_book(isbn):
     set_db()
@@ -410,7 +533,9 @@ def open_book(isbn): #aca abre el libro guardado
     nombre = titulo+"_Full"
     print(nombre)
     Book.record_open(nombre, session['perfil'], dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), isbn, titulo) #ACA SERIA session['perfil']
-    return render_template('books/abrirlibro.html', titulo=titulo, nombre=nombre)
+    user_id=session['usuario_id']
+    return render_template('books/abrirlibro.html', titulo=titulo, nombre=nombre, user_id=user_id)
+
 
 def open_cap_menu(isbn):
     set_db()
@@ -419,7 +544,8 @@ def open_cap_menu(isbn):
     noDisponibles = list(map(lambda cap: cap['available_from'] > today, capitulos))
     vencidos = list(map(lambda cap: ((cap['available_to'] is not None) and cap['available_to'] < today), capitulos))
     titulo = Book.find_meta_by_isbn(isbn)['titulo']
-    return render_template('books/abrir_cap_menu.html',isbn=isbn, capitulos=capitulos, noDisponibles=noDisponibles, vencidos=vencidos, titulo=titulo)
+    user_id=session['usuario_id']
+    return render_template('books/abrir_cap_menu.html',isbn=isbn, user_id=user_id, capitulos=capitulos, noDisponibles=noDisponibles, vencidos=vencidos, titulo=titulo)
 
 def open_cap(isbn, num):
     print("abro capitulo")
@@ -428,13 +554,15 @@ def open_cap(isbn, num):
     titulo = Book.find_meta_by_isbn(isbn)['titulo']
     nombre = titulo+"_cap_"+str(num)
     Book.record_open(nombre, session['perfil'], dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), isbn, titulo) #ACA SERIA session['perfil']
-    return render_template('books/abrirlibro.html', titulo=titulo, nombre=nombre)
+    user_id=session['usuario_id']
+    return render_template('books/abrirlibro.html', titulo=titulo, nombre=nombre, user_id=user_id)
 
 def open_any(isbn, name):
     Book.db = get_db()
     titulo = Book.find_meta_by_isbn(isbn)['titulo']
     Book.record_open(name, session['perfil'], dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), isbn, titulo) #ACA SERIA session['perfil'])
-    return render_template('books/abrirlibro.html', titulo=titulo, nombre=name)
+    user_id=session['usuario_id']
+    return render_template('books/abrirlibro.html', titulo=titulo, nombre=name, user_id=user_id)
 
 def validate_meta_isbn(isbn):
     book = Book.find_meta_by_isbn(isbn)

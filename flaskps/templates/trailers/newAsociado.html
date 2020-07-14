@@ -1,0 +1,31 @@
+{% extends "user/userBase.html" %}
+
+{% block title %}
+
+    <title>Cargar Trailer - Bookflix</title>
+
+{% endblock %}
+
+{% block main %}
+<div class="latestBooks loginView">
+    <h1>Cargar Trailer para {{libro.titulo}}:</h1>
+    <form action="{{ url_for('trailer_load_asociado', isbn=libro.isbn)}}" method="POST" enctype="multipart/form-data">
+        <div class="form-group input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="fa fa-align-justify"></i> </span>
+            </div>
+            <input required type="text" placeholder="Titulo" class="form-control" name="titulo">
+        </div>
+        <div class="form-group input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="fa fa-file-pdf"></i> </span>
+            </div>
+            <input required name="archivo" class="form-control"type="file"></input>                                
+        </div> <!-- form-group// -->
+        <div class="form-group">
+            <button type="submit" class="btn btn-light btn-block"> Crear Trailer  </button>
+            <center><a href="/libros">Cancelar</a></center>
+        </div> <!-- form-group// -->
+    </form>
+</div>          
+{% endblock %}

@@ -1,47 +1,27 @@
-{% extends "novedad/novedadBase.html" %}
+{% extends "user/userBase.html" %}
 
-{% block main %}
     
 {% block title %}
 
 <title>Novedades</title>
 
 {% endblock %}
-
-<h1 class="panel-title">Novedades</h1>
-<br><br><br>
-    <div class="container">
-            <div class="row">
-                <div class="col-md-20">
-                    <div class="panel panel-primary" >
-                        <div class="panel-heading">
-                            <br><br>
-                            <table class="table table-hover" id="dev-table" >
-                            <tr>
-                                <th>Titulo</th>
-                                <th>Descripcion</th>
-                            </tr>
-                            {% for nov in novedades[i*pag:(i+1)*pag] %}
-                                <tr>
-                                    <td>{{nov.titulo}}</td>
-                                    <td>{{nov.descripcion}}</td>
-                                </tr>
-                            {% endfor %}     
-
-                            </table>
-                                
-                            <br><br>
-                            
-                                
-                        </div>
-                        
-                        <br>
-                    </div>
-                </div>
-            </div>
-            </div>
-                
-            {% if adm %}
-            <a class="btn btn-link" href="{{url_for('novedad_list')}}">Ver Listado de Novedades</a>
-        {% endif %}
-{% endblock %}
+{% block main %}
+{% if adm %}
+<div class="latestBooks"><center>
+    <h2 class="adminLinks" style="width: 300px!important;"><a class="btn btn-link" href="{{url_for('novedad_list')}}">Ver Listado de Novedades</a></h2>
+</center>
+</div>
+{% endif %}
+{%if novedades%}
+<div class="latestBooks"><h1>Últimas novedades:</h1>
+{% for nov in novedades %}
+<div class="newAbout"><p class="newTitle">{{nov.titulo}}</p><span tabindex="0" style="margin-left: 52px;">Ver detalle de novedad</span><div class="viewDetail">
+{{nov.descripcion}}
+</div><p class="newHour">{{nov.created_at}}</p></div>
+{% endfor %}
+{%else%}
+<div class="latestBooks"><h1>No hay novedades disponibles.</h1>
+{%endif%}
+</div>
+{%endblock%}

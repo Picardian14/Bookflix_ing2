@@ -2,114 +2,66 @@
 
 {% block title %}
 
-    <title>Usuarios</title>
+    <title>Usuarios - Bookflix</title>
 
 {% endblock %}
 
-{% block navbar %}
-    <header class="masthead mb-auto">
-        <div class="inner">
-            <nav class="nav nav-masthead justify-content-center">
-                <a class="nav-link active" href="/usuarios">Usuarios</a>
-                <a class="nav-link active" href="/usuarios/mostrar/{{user_id}}">Ver mi perfil</a>
-                <a class="nav-link active" href="/novedades">Novedades</a>
-                {% if adm %}
-                    <a class="nav-link active" href="/libros">Libros</a>
-                    <a class="nav-link" href="/configuracion">Configuracion</a>
-                {% endif %}
-                <a class="nav-link" href="/cerrar_sesion">Cerrar Sesion</a>
-            </nav>
-        </div>
-    </header>
-
-{% endblock %}
 
 
 {% block main %}
-    {% if adm %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-20">
-                <br>
-                <br>
-                <h3 class="panel-title">Buscar usuario</h3>
-                <br>
-                <form action="{{ url_for('user_resource_indexUser') }}" method="POST" class="navbar-form navbar-left">
-                    <div class="form-group">
-                        <input type="text" required class="form-control" name="username" placeholder="Nombre de usuario">
-                    </div>
-                    <button type="submit" class="btn btn-default">Buscar</button>
-                </form>
-                <br>
-                <br>
-                <a class="btn btn-link" href="{{ url_for('user_resource_new') }}">Nuevo Usuario</a>
-                <br>
-                <br>
-                <div class="panel-heading">
-                    <h3 class="panel-title">Usuarios</h3>
-                </div>
-                <br>
-                <a class="btn btn-link" href="/usuarios" role="button">Todos</a>
-                <a class="btn btn-link" href="{{ url_for('user_resource_indexActive') }}" role="button">Activos</a>
-                <a class="btn btn-link" href="{{ url_for('user_resource_indexInactive') }}" role="button">Inactivos</a>
-                <div class="panel panel-primary">
-                    <div style="overflow-x:auto;">
-                    <table class="table table-hover" id="dev-table">
-                        <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>Fecha</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        {% if permit %}
-                        <tbody> 
-                        {% for usuario in usuarios[i*pag:(i+1)*pag] %}
-                            <tr>
-                            <td>{{ usuario.first_name }}</td>
-                            <td>{{ usuario.last_name }}</td>
-                            <td>{{ usuario.updated_at}}</td>
-                            <td><a href ="{{ url_for('user_resource_edit', id = usuario.id)}}">Editar</a></td>
-                            <td><a href ="{{ url_for('user_resource_show', id = usuario.id)}}">Mostrar</a></td>
-                            {% if usuario.activo %}
-                                <td><a href ="{{ url_for('user_resource_delete', id = usuario.id)}}">Deshabilitar</a></td>
-                            {% else %}
-                                <td><a href ="{{ url_for('user_resource_active', id = usuario.id)}}">Habilitar</a></td>
-                            {% endif %}
-                        </tr>
-                        {% endfor %}
-                        </tbody>
-                        {% endif %}
-                    </table>
-                    </div>
-                <br>
-                    <div class="wrapper">
-                            <ul class="pagination">
-                            {% if url == '/usuarios/index_by_active'%}
-                                <li class="page-item"><a class="page-link"
-                                                         href="{{ url_for('user_resource_indexActive', i=i-1 )}}">Previous</a>
-                                </li>
-                              <li class="page-item"><a class="page-link" href="{{ url_for('user_resource_indexActive', i=i+1 )}}">Next</a></li>
-                            {% else %}
-                                {% if url == '/usuarios/index_by_inactive'%}
-                                    <li class="page-item"><a class="page-link"
-                                                             href="{{ url_for('user_resource_indexInactive', i=i-1 )}}">Previous</a>
-                                    </li>
-                                    <li class="page-item"><a class="page-link" href="{{ url_for('user_resource_indexInactive', i=i+1 )}}">Next</a></li>
-                                {% else %}
-                                    <li class="page-item"><a class="page-link" href="
-                                            {{ url_for('user_resource_index', i=i-1 )}}">Previous</a></li>
-                                    <li class="page-item"><a class="page-link" href="{{ url_for('user_resource_index', i=i+1 )}}">Next</a></li>
-                                {% endif %}
-                            {% endif %}
-                            </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+  {% if adm %}
+    <div class="latestBooks searchView">
+      <form action="{{ url_for('user_resource_indexUser') }}" method="POST" class="navbar-form navbar-left">
+        <input type="text" required method="POST" class="form-control" name="username" placeholder="Nombre de usuario">
+        <button type="submit">Buscar</button>
+      </form>
     </div>
-    {% endif %}
+    <div class="latestBooks adminView"><a href="{{ url_for('user_resource_new') }}" class="optionUser" id="newUserId">Nuevo usuario</a></div>  
 
+      <div class="latestBooks adminView">
+        <h1>Usuarios:</h1>
+        <a href="/usuarios" class="optionUser">Todos</a><a href="{{ url_for('user_resource_indexActive') }}" class="optionUser">Activos</a><a href="{{ url_for('user_resource_indexInactive') }}"class="optionUser">Inactivos</a>
+        <table>
+        <tr>
+          <th>NOMBRE</th>
+          <th>APELLIDO</th>
+          <th>FECHA</th>
+          <th>EDITAR</th>
+          <th>USUARIO</th>
+          <th></th>
+        </tr>
+        {% if permit %}
+          {% for usuario in usuarios[i*pag:(i+1)*pag] %}
+          <tr>
+            <td>{{ usuario.first_name }}</td>
+            <td>{{ usuario.last_name }}</td>
+            <td>{{ usuario.updated_at}}</td>
+            <td><a href="{{ url_for('user_resource_edit', id = usuario.id)}}">Editar</a></td>
+            <td><a href ="{{ url_for('user_resource_show', id = usuario.id)}}">Mostrar</a></td>
+            {% if usuario.activo %}
+              <td><a href="{{ url_for('user_resource_delete', id = usuario.id)}}">Deshabilitar</a></td>
+            {% else %}
+              <td><a href="{{ url_for('user_resource_active', id = usuario.id)}}">Habilitar</a></td>
+            {% endif %}
+            
+          </tr>
+          {% endfor %}
+        {% endif %}
+      </table>
+    </div>
+
+
+
+<div class="paginationBookflix">
+  {% if url == '/usuarios/index_by_active'%}
+    <a href="{{ url_for('user_resource_indexActive', i=i-1 )}}">Previous</a>
+    <a href="{{ url_for('user_resource_indexActive', i=i+1 )}}">Next</a></li>
+  {% else %}
+    {% if url == '/usuarios/index_by_inactive'%}
+      <a href="{{ url_for('user_resource_indexActive', i=i+1 )}}">Previous</a>
+      <a href="{{ url_for('user_resource_indexInactive', i=i+1 )}}">Next</a></li>
+    {% endif %}
+  {% endif %}
+</div>
+  {% endif %}
 {% endblock %}

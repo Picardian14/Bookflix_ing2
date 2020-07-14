@@ -2,24 +2,9 @@
 
 {% block main %}
     
-
-
-    <div class="container">
-            <div class="row">
-                <div class="col-md-20">
-                    <div class="panel panel-primary" >
-                        <div class="panel-heading">
-                                
-                            
-                            <br>
-                                <h3 class="panel-title">historial</h3>
-                        </div>
-                        <br>                        
-                        
-                        <br>
-                        <br>
-                        {% block tabla %}
-                        <table class="table table-hover" id="dev-table" >
+<div class="latestBooks adminView">
+    <h1>Historial</h1>
+                            <table class="table table-hover" id="dev-table" >
                             <thead>
                             <tr>
                                 <th>       </th>
@@ -58,18 +43,5 @@
                             </tbody>
     
                         </table>
-                        {% endblock %}
-                        <br>
-                    </div>
-                </div>
-            </div>
-            </div>
-                <div class="center">
-                            <div class="wrapper">
-                                    <ul class="pagination">
-                                            <li class="page-item"><a class="page-link" href="{{ url_for('book_menu', i=i-1 )}}">Previous</a></li>
-                                            <li class="page-item"><a class="page-link" href="{{ url_for('book_menu', i=i+1 )}}">Next</a></li>
-                                    </ul>
-                            </div></div>
-    
+</div>
 {% endblock %}
