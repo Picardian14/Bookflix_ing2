@@ -40,6 +40,9 @@ app.add_url_rule("/configuration/toggle", 'configuracion_toggleActive', configur
 app.add_url_rule("/configuration/edit", 'configuracion_edit', configuracion.editarInformacion, methods=['POST'])
 app.add_url_rule("/configuration/edit", 'configuracion_render_edit', configuracion.renderEditarInformacion)
 app.add_url_rule("/config", 'configuracion_changePage', configuracion.changePage, methods=['POST'])
+#app.add_url_rule("/configuration/listadoUsers", 'configuracion_render_listado', configuracion.renderlistadoUsuarios)
+#app.add_url_rule("/configuration/listadoVisitas", 'configuracion_render_visitas', configuracion.renderlistadoVisitas)
+
 # Usuarios
 
 #Metodos para mostrar tablas de usuarios
@@ -53,7 +56,7 @@ app.add_url_rule("/usuario/new", 'user_resource_new', user_resource.new) #levant
 app.add_url_rule("/usuarios/editar/<int:id>", 'user_resource_edit', user_resource.edit)#levanta vista de edicion
 app.add_url_rule("/editar/<int:id>", 'user_resource_execute_edit', user_resource.executeEdit, methods=['POST']) #crea edicion en el modelo
 app.add_url_rule("/usuarios/mostrar/<int:id>", 'user_resource_show', user_resource.show) #mostrar datos de usuario
-app.add_url_rule("/usuarios/delete/<int:id>", 'user_resource_delete', user_resource.delete)#Baja logica
+app.add_url_rule("/usuarios/delete/<int:id>", 'user_resource_delete', user_resource.delete, methods=['POST', 'GET'])#Baja logica
 app.add_url_rule("/usuarios/active/<int:id>", 'user_resource_active', user_resource.active)#activacion de baja logica
 
 #Asignacion de roles
@@ -122,7 +125,7 @@ app.add_url_rule("/trailer/create", 'trailer_load', trailer.load_trailer, method
 #CRUD perfiles
 app.add_url_rule("/perfiles/new", "perfil_new", perfil.new)
 app.add_url_rule("/perfiles/create", "perfil_create", perfil.create,methods=['POST'])
-app.add_url_rule("/perfilesdelete/<int:id>", "perfil_delete", perfil.delete)
+app.add_url_rule("/perfilesdelete/<int:id>", "perfil_delete", perfil.delete, methods=['POST', 'GET'])
 app.add_url_rule("/perfiles", "perfil_menu", perfil.render_menu)
 app.add_url_rule("/perfiles/<int:id>", "perfil_select", perfil.select)
 #Cambio de Plan

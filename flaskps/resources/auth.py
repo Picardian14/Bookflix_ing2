@@ -38,6 +38,7 @@ def authenticate():
         del session['permisos']
     flash("La sesión se inició correctamente.")
     if 'configuracion_usarInhabilitado' in session['permisos']:
+        session['perfil']=1
         return redirect(url_for("book_menu"))
     return redirect(url_for('perfil_menu'))
 

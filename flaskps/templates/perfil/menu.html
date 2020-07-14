@@ -1,4 +1,24 @@
 {% extends "perfil/perfilBase.html" %}
+{% block confirmFunction %}
+    <script>
+        $( function() {
+          $( "#dialog-confirm" ).dialog({
+            resizable: false,
+            height: "auto",
+            width: 400,
+            modal: true,
+            buttons: {
+              "Delete all items": function() {
+                $( this ).dialog( "close" );
+              },
+              Cancel: function() {
+                $( this ).dialog( "close" );
+              }
+            }
+          });
+        } );
+        </script>
+    {% endblock %}
 
 <div class="container">
     <div class="row">
@@ -10,11 +30,40 @@
                 <br>  
                 {% block main%}                      
                     {% for perfil in perfiles %}
+                    
                     <div>
                         <a href="{{url_for('perfil_select', id=perfil.id)}}">{{perfil.nombre}}</a>
                     
-                        <a onclick="return confirm('Se borrará todo el historial de {{perfil.nombre}} ¿confirma?')" href="{{url_for('perfil_delete', id=perfil.id)}}">eliminar</a>
+                        <!-- <a onclick="return confirm('Se borrará todo el historial de {{perfil.nombre}} ¿confirma?')" href="{{url_for('perfil_delete', id=perfil.id)}}">eliminar</a> <!--> 
+                        <button type="button" class="btn" data-toggle="modal" data-target="#exampleModalCenter{{perfil.id}}">
+                            Eliminar
+                          </button>
                         <br>
+                    </div>
+                                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModalCenter{{perfil.id}}">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle{{perfil.id}}">Eliminará un perfil:</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                            <h3>{{perfil.nombre}}</h3>
+                            <p>¿Continuar?</p>
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+                            <form action="{{url_for('perfil_delete', id=perfil.id)}}" method="post">
+                                <input type="submit" value="Delete" class="btn btn-danger">
+                            </form>
+                            </div>
+                        </div>
+                        </div>
                     </div>
                     {% endfor %}
                     <a href="{{url_for('perfil_new')}}">Crear Perfil</a>
@@ -27,5 +76,35 @@
                     {% endif %}
                     <br>
                     <br>
-                    <a onclick="return confirm('Se borrarán todos el historiales asociados a esta cuenta ¿confirma?')" href ="{{ url_for('user_resource_delete', id = perfiles[0].usuario_id)}}">Eliminar mi cuenta</a>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarCuentaCenter">
+                        Eliminar mi cuenta
+                      </button>
+                    <!--<a onclick="return confirm('Se borrarán todos el historiales asociados a esta cuenta ¿confirma?')" href ="{{ url_for('user_resource_delete', id = perfiles[0].usuario_id)}}">Eliminar mi cuenta</a>-->
+                    <!-- Modal -->
+                    <div class="modal fade" id="eliminarCuentaCenter">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="eliminarCuentaLongTitle">Eliminará su cuenta:</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                            <h3>Perderá todos los datos asociados a su cuenta. Esta acción es irreversible</h3>
+                            <p>¿Está segure?</p>
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+                            <form action="{{url_for('user_resource_delete', id = perfiles[0].usuario_id)}}" method="post">
+                                <input type="submit" value="Delete" class="btn btn-danger">
+                            </form>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                
+
                     {% endblock %}
