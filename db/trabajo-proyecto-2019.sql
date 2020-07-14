@@ -29,37 +29,13 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/ `grupo21` /*!40100 DEFAULT CHARACTER SE
 
 USE `grupo21`;
 
-
-DROP TABLE IF EXISTS `trailer`;
-CREATE TABLE `trailer`(
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `titulo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `isbn` varchar(255) COLLATE utf8_unicode_ci,
-  `archivo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (id),
-  CONSTRAINT FK_trailer_isbn FOREIGN KEY (isbn) REFERENCES metadato(isbn) ON DELETE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-DROP TABLE IF EXISTS `historial`;
-CREATE TABLE `historial`(  
-  `isbn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `titulo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `archivo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `usuario` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `perfil_id` int(11) NOT NULL,
-  `fecha_ultima` datetime DEFAULT NULL,
-  PRIMARY KEY (archivo, perfil_id),
-  CONSTRAINT FK_historial_perfil_id FOREIGN KEY (perfil_id) REFERENCES perfil(id) ON DELETE CASCADE,
-  CONSTRAINT FK_historial_isbn FOREIGN KEY (isbn) REFERENCES metadato(isbn)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `usuario`
 --
 DROP TABLE IF EXISTS `usuario`;
+
 CREATE TABLE `usuario` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -80,6 +56,7 @@ CREATE TABLE `usuario` (
 
 
 DROP TABLE IF EXISTS `perfil`;
+
 CREATE TABLE `perfil`(  
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -89,6 +66,15 @@ CREATE TABLE `perfil`(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+DROP TABLE IF EXISTS `favorito`;
+CREATE TABLE `favorito`(  
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `isbn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `perfil_id` int(11) NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT FK_favorito_perfil_id FOREIGN KEY (perfil_id) REFERENCES perfil(id) ON DELETE CASCADE,
+  CONSTRAINT FK_favorito_isbn FOREIGN KEY (isbn) REFERENCES libro(isbn)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 LOCK TABLES `perfil` WRITE;
 /*!40000 ALTER TABLE `perfil` DISABLE KEYS */;
 INSERT INTO `perfil` VALUES (1,1,'Ivanoide');
@@ -97,12 +83,13 @@ INSERT INTO `perfil` VALUES (1,1,'Ivanoide');
 UNLOCK TABLES;
 
 
+
 DROP TABLE IF EXISTS `historial`;
+
 CREATE TABLE `historial`(  
   `isbn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `titulo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `archivo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `usuario` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `perfil_id` int(11) NOT NULL,
   `fecha_ultima` datetime DEFAULT NULL,
   PRIMARY KEY (archivo, perfil_id),
@@ -112,6 +99,7 @@ CREATE TABLE `historial`(
 
 
 DROP TABLE IF EXISTS `novedad`;
+
 CREATE TABLE `novedad`(
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `titulo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -121,7 +109,19 @@ CREATE TABLE `novedad`(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+DROP TABLE IF EXISTS `trailer`;
+CREATE TABLE `trailer`(
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `titulo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `isbn` varchar(255) COLLATE utf8_unicode_ci,
+  `archivo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT FK_trailer_isbn FOREIGN KEY (isbn) REFERENCES metadato(isbn) ON DELETE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 DROP TABLE IF EXISTS `libro`;
+
 CREATE TABLE `libro`(
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `isbn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -133,6 +133,7 @@ CREATE TABLE `libro`(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `capitulo`;
+
 CREATE TABLE `capitulo`(
   `num` int(11) NOT NULL,
   `isbn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -144,6 +145,7 @@ CREATE TABLE `capitulo`(
 
 
 DROP TABLE IF EXISTS `metadato`;
+
 CREATE TABLE `metadato`(
   `isbn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `titulo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -159,20 +161,8 @@ CREATE TABLE `metadato`(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-DROP TABLE IF EXISTS `favorito`;
-CREATE TABLE `favorito`(
-	`id` int(11) NOT NULL auto_increment,
-    `isbn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-    `usuario_id` INT NOT NULL,
-    `perfil_id` INT NOT NULL, 
-	PRIMARY KEY(id),
-    CONSTRAINT FK_favoritos_perfil_id FOREIGN KEY (perfil_id) REFERENCES perfil(id) ON DELETE CASCADE,
-    CONSTRAINT FK_favoritos_isbn FOREIGN KEY (isbn) REFERENCES metadato(isbn),
-    CONSTRAINT FK_favoritos_usuario_id FOREIGN KEY (usuario_id) REFERENCES usuario(id)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 DROP TABLE IF EXISTS `autor`;
+
 CREATE TABLE `autor`(
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -180,6 +170,7 @@ CREATE TABLE `autor`(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `editorial`;
+
 CREATE TABLE `editorial`(
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -187,6 +178,7 @@ CREATE TABLE `editorial`(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `genero`;
+
 CREATE TABLE `genero`(
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -203,27 +195,27 @@ INSERT INTO `usuario` VALUES (3,'martin@gmail.com','33123123','lorenzo','1234',1
 UNLOCK TABLES;
 
 LOCK TABLES `autor` WRITE;
-/*!40000 ALTER TABLE `metadato` DISABLE KEYS */;
+/*!40000 ALTER TABLE `autor` DISABLE KEYS */;
 INSERT INTO `autor` VALUES (1,'Tolkien');
 INSERT INTO `autor` VALUES (2,'Stephen king');
 INSERT INTO `autor` VALUES (3,'Michael Bay');
-/*!40000 ALTER TABLE `metadato` ENABLE KEYS */;
+/*!40000 ALTER TABLE `autor` ENABLE KEYS */;
 UNLOCK TABLES;
 
 LOCK TABLES `editorial` WRITE;
-/*!40000 ALTER TABLE `metadato` DISABLE KEYS */;
+/*!40000 ALTER TABLE `editorial` DISABLE KEYS */;
 INSERT INTO `editorial` VALUES (1,'Lex');
 INSERT INTO `editorial` VALUES (2,'Planeta');
 INSERT INTO `editorial` VALUES (3,'SM');
-/*!40000 ALTER TABLE `metadato` ENABLE KEYS */;
+/*!40000 ALTER TABLE `editorial` ENABLE KEYS */;
 UNLOCK TABLES;
 
 LOCK TABLES `genero` WRITE;
-/*!40000 ALTER TABLE `metadato` DISABLE KEYS */;
+/*!40000 ALTER TABLE `genero` DISABLE KEYS */;
 INSERT INTO `genero` VALUES (1,'Fantasia');
 INSERT INTO `genero` VALUES (2,'Terror');
 INSERT INTO `genero` VALUES (3,'Accion');
-/*!40000 ALTER TABLE `metadato` ENABLE KEYS */;
+/*!40000 ALTER TABLE `genero` ENABLE KEYS */;
 UNLOCK TABLES;
 
 LOCK TABLES `metadato` WRITE;
@@ -234,14 +226,6 @@ INSERT INTO `metadato` VALUES ('123456','libro de prueba 3',3,'sinopsis de prueb
 /*!40000 ALTER TABLE `metadato` ENABLE KEYS */;
 UNLOCK TABLES;
 
-LOCK TABLES `perfil` WRITE;
-/*!40000 ALTER TABLE `perfil` DISABLE KEYS */;
-INSERT INTO `perfil` VALUES (1, 'Ivanoide');
-/*!40000 ALTER TABLE `perfil` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
---
 --
 -- Estructura de tabla para la tabla `rol`
 --
@@ -334,8 +318,6 @@ UNLOCK TABLES;
 -- Estructura de tabla para la tabla `configuracion`
 --
 
-
-
 DROP TABLE IF EXISTS `configuracion`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -356,7 +338,6 @@ INSERT INTO `configuracion` VALUES (1,10,1,'Bookflix','Bookflix, para leer y lee
 /*!40000 ALTER TABLE `configuracion` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
 DROP TABLE IF EXISTS `paginado`;
 
 CREATE TABLE `paginado` (
@@ -369,7 +350,6 @@ CREATE TABLE `paginado` (
 LOCK TABLES `paginado` WRITE;
 INSERT INTO `paginado` VALUES (1, 5, 0);
 UNLOCK TABLES;
-
 
 -- -----------------------------------------------------
 -- Table `comentarios`
@@ -389,4 +369,3 @@ CREATE TABLE IF NOT EXISTS `comentarios` (
   CONSTRAINT FK_comentarios_isbn FOREIGN KEY (isbn) REFERENCES metadato(isbn),
   CONSTRAINT FK_comentarios_usuario_id FOREIGN KEY (usuario_id) REFERENCES usuario(id)
   );
-
