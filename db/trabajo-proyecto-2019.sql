@@ -78,18 +78,6 @@ CREATE TABLE `favoritos`(
     CONSTRAINT FK_favoritos_usuario_id FOREIGN KEY (usuario_id) REFERENCES usuario(id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 9a202f7c8093a72af5c89d88afaaea964956cefb
-LOCK TABLES `perfil` WRITE;
-/*!40000 ALTER TABLE `perfil` DISABLE KEYS */;
-INSERT INTO `perfil` VALUES (1,1,'Ivanoide');
-
-/*!40000 ALTER TABLE `perfil` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
 
 DROP TABLE IF EXISTS `historial`;
 
@@ -199,6 +187,13 @@ INSERT INTO `usuario` VALUES (2,'sofia@gmail.com','21423123','fede','1234',1,19-
 INSERT INTO `usuario` VALUES (1,'ivan@gmail.com','11123123','ivan','1234',1,19-11-20,19-11-20,'ivan','Mindlin', 'premium', 19-11-20,'500','1234123412341234');
 INSERT INTO `usuario` VALUES (3,'martin@gmail.com','33123123','lorenzo','1234',1,19-11-20,19-11-20,'martin','delpino', 'premium', 19-11-20,'500','1234123412341234');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `perfil` WRITE;
+/*!40000 ALTER TABLE `perfil` DISABLE KEYS */;
+INSERT INTO `perfil` VALUES (1,'Ivanoide',1);
+
+/*!40000 ALTER TABLE `perfil` ENABLE KEYS */;
 UNLOCK TABLES;
 
 LOCK TABLES `autor` WRITE;
