@@ -75,6 +75,8 @@ CREATE TABLE `favorito`(
   CONSTRAINT FK_favorito_perfil_id FOREIGN KEY (perfil_id) REFERENCES perfil(id) ON DELETE CASCADE,
   CONSTRAINT FK_favorito_isbn FOREIGN KEY (isbn) REFERENCES libro(isbn)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 LOCK TABLES `perfil` WRITE;
 /*!40000 ALTER TABLE `perfil` DISABLE KEYS */;
 INSERT INTO `perfil` VALUES (1,1,'Ivanoide');
