@@ -195,6 +195,7 @@ def create(): #crea un usuario
     else:        
         Usuario.create(request.form)
         user_id = Usuario.get_id_by_username(request.form.get('username'))
+        #print(user_id)
         Perfil.create(request.form.get('username'), user_id)
         flash("Usuario creado con exito")
         return redirect(url_for('auth_login'))
