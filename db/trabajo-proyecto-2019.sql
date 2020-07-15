@@ -66,17 +66,22 @@ CREATE TABLE `perfil`(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-DROP TABLE IF EXISTS `favorito`;
-CREATE TABLE `favorito`(  
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `isbn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `perfil_id` int(11) NOT NULL,
-  PRIMARY KEY (id),
-  CONSTRAINT FK_favorito_perfil_id FOREIGN KEY (perfil_id) REFERENCES perfil(id) ON DELETE CASCADE,
-  CONSTRAINT FK_favorito_isbn FOREIGN KEY (isbn) REFERENCES libro(isbn)
+DROP TABLE IF EXISTS `favoritos`;
+CREATE TABLE `favoritos`(
+	`id` int(11) NOT NULL auto_increment,
+    `isbn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+    `usuario_id` INT NOT NULL,
+    `perfil_id` INT NOT NULL, 
+	PRIMARY KEY(id),
+    CONSTRAINT FK_favoritos_perfil_id FOREIGN KEY (perfil_id) REFERENCES perfil(id) ON DELETE CASCADE,
+    CONSTRAINT FK_favoritos_isbn FOREIGN KEY (isbn) REFERENCES metadato(isbn),
+    CONSTRAINT FK_favoritos_usuario_id FOREIGN KEY (usuario_id) REFERENCES usuario(id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9a202f7c8093a72af5c89d88afaaea964956cefb
 LOCK TABLES `perfil` WRITE;
 /*!40000 ALTER TABLE `perfil` DISABLE KEYS */;
 INSERT INTO `perfil` VALUES (1,1,'Ivanoide');
