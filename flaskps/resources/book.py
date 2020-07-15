@@ -20,7 +20,7 @@ static_path = 'flaskps/static/uploads/'
 def new_favorite(isbn):
     set_db()
     user_id= session['usuario_id']
-    perfil_id = session['perfil_id']
+    perfil_id = session['perfil']
     Book.marcarFavorito(isbn, user_id, perfil_id)
     flash("Libro añadido a favoritos.")
     return redirect(url_for("book_view", isbn=isbn))
@@ -28,16 +28,18 @@ def new_favorite(isbn):
 
 def quit_favorite(isbn):
     set_db()
-    user_id= sesssion['perfil_id']#session['usuario_id']
-    Book.deleteFavorito(isbn, user_id)
+    user_id= session['usuario_id']
+    perfil_id = session['perfil']
+    Book.deleteFavorito(isbn, user_id, perfil_id)
     flash("Libro quitado de favoritos.")
     return redirect(url_for("book_view", isbn=isbn))
 
 
 def render_favoritos():
     set_db()
-    user_id = session['perfil_id']# session['usuario_id']
-    favoritos = Book.getFavoritos(user_id)
+    user_id= session['usuario_id']
+    perfil_id = session['perfil']
+    favoritos = Book.getFavoritos(user_id, perfil_id)
     adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
     return render_template('books/favoritoView.html', fav=favoritos, adm=adm, user_id=user_id)
 
@@ -51,16 +53,20 @@ def book_view(isbn):
     editorial = Editorial.find_by_id(meta['editorial_id'])['nombre']
     genero = Genero.find_by_id(meta['genero_id'])['nombre']
     coso = Book.getByISBN(isbn)
-    user_id = session['perfil_id']#session['usuario_id']
+    user_id = session['usuario_id']
+    perfil_id = session['perfil']
     usuarios = Book.allUsers()
-    esFavorito = Book.esFavorito(isbn, user_id)
-    return render_template('/books/librosview.html', favorito=esFavorito, meta = meta, users=usuarios, comentarios=coso,autor =autor, editorial = editorial, genero = genero, canReadBook=venc, hasChapters=hasChapters,user_id=user_id)
+
+
+    esFavorito = Book.esFavorito(isbn, user_id, perfil_id)
+    print(esFavorito)
+    return render_template('/books/librosview.html', favorito=esFavorito, meta = meta, users=usuarios, comentarios=coso,autor =autor, editorial = editorial, genero = genero, canReadBook=venc, hasChapters=hasChapters,user_id=user_id, perfil_id=perfil_id)
 
 
 def comment_book(isbn):
     set_db()
     user_id = session['usuario_id']
-    perfil_id = session['perfil_id']
+    perfil_id = session['perfil']
     if request.method == "POST":
         today = dt.datetime.now()
         if request.form['comentario']:
@@ -610,14 +616,17 @@ def validate_date(isbn):
 
 
 
-def render_favoritos():
-    set_db()        
-    books = Book.allFavorites() 
-    i = int(request.args.get('i',0))
-    Configuracion.db = get_db()
-    pag = Configuracion.get_page_size()  
-    adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
-    return render_template('books/favorites.html', books=books, i=i, pag=pag, adm=adm) 
+#def render_favoritos():
+ #   set_db() 
+  #  user_id = session['usuario_id']
+   # perfil_id = session['perfil']
+   # books = Book.allFavorites(user_id, perfil_id)
+   # print(books) 
+   # i = int(request.args.get('i',0))
+   # Configuracion.db = get_db()
+   # pag = Configuracion.get_page_size()  
+   # adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
+   # return render_template('books/favorites.html', books=books, i=i, pag=pag, adm=adm, user_id=user_id) 
 
 def set_db():
     Book.db = get_db()

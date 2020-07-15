@@ -10,6 +10,8 @@
 {% block main %}
 <div class="latestBooks"><b>Género:</b> {{genero}} </div>
 
+Nro de usuario: {{user_id}}
+Nro de perfil: {{perfil_id}}
 <div class="latestBooks">
 	<div class="latestBooks favView">
 		<table><tr>{%if favorito == False%}<td><form action="{{ url_for('mark_favorite', isbn = meta.isbn)}}" method="POST"><button type="submit" class="favBook">Marcar como favorito<span class="fa fa-heart"></span></button></form></td>{%else%}

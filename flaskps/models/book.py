@@ -8,7 +8,7 @@ class Book(object):
 
     @classmethod
     def marcarFavorito(cls,isbn, userID, perfil_id):
-        sql = 'INSERT INTO favoritos(isbn,usuario_id, perfil_id) VALUES (%s,%s, %s)'
+        sql = 'INSERT INTO favoritos(isbn,usuario_id,perfil_id) VALUES (%s,%s, %s)'
         data = (isbn, userID, perfil_id)
         cursor = cls.db.cursor()
         cursor.execute(sql,data)
@@ -16,19 +16,22 @@ class Book(object):
         return True
 
     @classmethod
-    def esFavorito(cls,isbn, userID):
-        sql = 'SELECT * FROM favoritos WHERE isbn = %s AND perfil_id= %s'
-        data = (isbn, userID)
+    def esFavorito(cls,isbn, userID, perfilID):
+        sql = 'SELECT * FROM favoritos WHERE isbn = %s AND perfil_id= %s AND usuario_id= %s'
+        data = (isbn, perfilID, userID)
         cursor = cls.db.cursor()
         cursor.execute(sql,data)
-        row = cursor.fetchone()
-        if row == None:
+        row = cursor.fetchall()
+        print(row)
+        if row == ():
+            print('no hay ningun favorito')
             return False
         else:
+            print('es favorito')
             return True
 
     @classmethod
-    def deleteFavoritoByISBN(cls,isbn):
+    def deleteFavoritoByISBN(cls,isbnD):
         sql = "DELETE FROM favoritos WHERE isbn = %s"
         data = (isbn)
         cursor = cls.db.cursor()
@@ -46,18 +49,18 @@ class Book(object):
         return cursor.fetchall
         
     @classmethod
-    def deleteFavorito(cls, isbn, userID):
-        sql = "DELETE FROM favoritos WHERE isbn = %s AND perfil_id= %s"
-        data = (isbn,userID)
+    def deleteFavorito(cls, isbn, userID, perfilID):
+        sql = "DELETE FROM favoritos WHERE isbn = %s AND perfil_id= %s AND usuario_id= %s"
+        data = (isbn,perfilID,userID)
         cursor = cls.db.cursor()
         cursor.execute(sql, data)
         cls.db.commit()
         return True
 
     @classmethod
-    def getFavoritos(cls,userID):
-        sql = "SELECT * FROM favoritos WHERE perfil_id=%s"
-        data = (userID)
+    def getFavoritos(cls,userID, perfilID):
+        sql = "SELECT * FROM favoritos WHERE perfil_id=%s AND usuario_id= %s"
+        data = (perfilID, userID)
         cursor = cls.db.cursor()
         cursor.execute(sql,data)
         return cursor.fetchall()
@@ -340,11 +343,12 @@ class Book(object):
         return status==1
 
     @classmethod     
-    def allFavorites(cls, id, isbn):
-        sql = 'SELECT * FROM favorito WHERE perfil_id = %s and isbn = %s'
+    def allFavorites(cls, idUser, idPerfil):
+        sql = 'SELECT * FROM favoritos WHERE perfil_id = %s and usuario_id=%s'
+        data = (idUser, idPerfil)
         cursor = cls.db.cursor()
-        cursor.execute(sql, (id))  
-        favs = cursor.fetchall()   
-        for fav in favs:
-            fav['autor_id'] = Autor.find_by_id(meta['autor_id'])['nombre']
-        return favs
+        cursor.execute(sql, (data))  
+        return cursor.fetchall()   
+        #for fav in favs:
+            #fav['autor_id'] = Autor.find_by_id(meta['autor_id'])['nombre']
+        #return favs

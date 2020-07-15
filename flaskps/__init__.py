@@ -95,7 +95,6 @@ app.add_url_rule("/libros/eliminar/<string:isbn>", "book_meta_remove", book.remo
 #Manejo de libros
 app.add_url_rule("/libros", 'book_menu', book.render_menu, methods=['POST', 'GET'])
 app.add_url_rule("/librosHistorial", 'book_historial', book.render_historial)
-app.add_url_rule("/librosFavoritos", 'book_favoritos', book.render_favoritos)
 app.add_url_rule("/libros_busqueda", 'book_search', book.search, methods=['POST'])
 
 
@@ -107,8 +106,7 @@ app.add_url_rule("/librosview/<string:isbn>/favorite", 'mark_favorite',book.new_
 app.add_url_rule("/librosview/<string:isbn>/unfavorite", 'quit_favorite',book.quit_favorite, methods=['POST'])
 
 
-
-app.add_url_rule("/librosFavoritos", 'book_favorites', book.render_favoritos)
+app.add_url_rule("/librosFavoritos", 'book_favoritos', book.render_favoritos)
 
 
 
