@@ -61,3 +61,4 @@ class Novedad(object):
         sql = 'SELECT * FROM novedad WHERE id = %s'
         cursor = cls.db.cursor()
         cursor.execute(sql, id)
+        return cursor.fetchone()

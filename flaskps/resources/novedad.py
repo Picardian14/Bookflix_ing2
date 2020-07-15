@@ -46,7 +46,7 @@ def list():
 def renderEdit_novedad(id):
     set_db()
     nov = Novedad.find_novedad_by_id(id)
-    user_id=session['usuario_id']
+    user_id= session['usuario_id']
     return render_template("novedad/edit.html", nov=nov, user_id=user_id)
 
 
