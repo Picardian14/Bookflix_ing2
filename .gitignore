@@ -1,5 +1,4 @@
 /venv
 /flaskps/static/uploads
 /flaskps/config/*
-__pycache__/
 flaskps/config/development.py
