@@ -1,0 +1,87 @@
+{% extends "user/userBase.html" %}
+
+{% block title %}
+
+    <title>{{meta.titulo}} - Bookflix</title>
+
+{% endblock %}
+
+
+{% block main %}
+<div class="latestBooks"><b>Género:</b> {{genero}} </div>
+
+<div class="latestBooks">
+	<div class="latestBooks favView">
+		<table><tr>{%if favorito == False%}<td><form action="{{ url_for('mark_favorite', isbn = meta.isbn)}}" method="POST"><button type="submit" class="favBook">Marcar como favorito<span class="fa fa-heart"></span></button></form></td>{%else%}
+		<td>
+		<form action="{{ url_for('quit_favorite', isbn = meta.isbn)}}" method="POST"><button type="submit" class="favBook">Eliminar favorito<span class="fa fa-heart-broken"></span></button></form></td>{%endif%}</tr></table>
+	</div>
+	<div class="bookBox indView">
+		<div class="bookInfo indView"><h1>{{meta.titulo}}</h1>
+			<b>Autor:</b> {{autor}}
+			<br><b>Sinopsis:</b>
+			<p class="bookPlot indView">{{meta.sinopsis}}</p>
+		</div>
+		<div class="bookInfo sndView">
+			<h1>Detalles del libro:</h1>
+			<b>ISBN:</b> {{meta.isbn}}
+			<b>Editorial:</b> {{editorial}}
+			<h1>Lectura:</h1>
+			{% if canReadBook %}
+                <a class="btn btn-link" href="{{url_for('book_open', isbn = meta.isbn, user_id = user_id)}}"><span class="fa fa-book"></span>Abrir Libro</a>  
+            {% endif %}
+            {% if hasChapters %}
+                    <a class="btn btn-link" href="{{url_for('book_cap_menu', isbn = meta.isbn)}}"><span class="fa fa-book"></span> Abrir Capitulos</a>    
+            {% endif %}
+		</div>
+		<p class="bookData indView" style="color:#4c394e!important;">hola</p>
+	</div>
+
+	<div class="latestBooks comentView"><h1>Reseñar libro:</h1>
+		<form action="{{ url_for('comment_book', isbn=meta.isbn)}}" class="commentBook" name="comentario" method="post" enctype="multipart/form-data">
+			<textarea id="campo" name="comentario" class="comentario_input"></textarea>
+			<div style="color: #daa520;" class="starArea">
+				<select name="select">
+  					<option selected value="1">&#9733</option> 
+  					<option value="2">&#9733&#9733</option>
+  					<option value="3">&#9733&#9733&#9733</option>
+  					<option value="4">&#9733&#9733&#9733&#9733</option>
+  					<option value="5">&#9733&#9733&#9733&#9733&#9733</option>
+				</select>
+			</div>
+		    <input type="submit" style="margin-top: -18px;"value="Enviar" name="submit" class="comentario_submit">
+		</form>
+	</div>
+
+	{% if comentarios %}
+	<div class="latestBooks comentView"><h1>Reseñas publicadas:</h1>
+	{% endif %}
+
+	{% for comentario in comentarios %}
+	<div class="buttonarea">
+		<form action="{{ url_for('delete_comment', isbn = meta.isbn, idCom= comentario.id)}}" method="POST"><button type="submit" class="favBook"><span class="fa fa-trash-alt"></span> Eliminar Comentario</button></form>
+		{% if comentario.spoiler == 0 %}<form action="{{ url_for('spoiler_comment', isbn = meta.isbn, idCom= comentario.id)}}" method="POST"><button type="submit" class="favBook"><span class="fa fa-trash-alt"></span> Marcar como spoiler</button></form>{%endif%}
+	</div>
+	<br>
+	<div class="comentario">
+		<div class="opinion_info">por <b>{{comentario.usuario_id}}</b> el día <b>{{comentario.fecha}}</b></div>
+		<p class="comentP">
+			{% if comentario.spoiler == 1 %}
+				<div style="margin-top: -59px!important;opacity: 0;">{{comentario.comentario}}</div><br><span tabindex="0">Este comentario fue marcado como spoiler. Aprete sobre este mensaje para ver su contenido.</span><div class="viewDetail" style="font-size: 16px!important;">{{comentario.comentario}}</div>
+			{% else %}
+			{% if comentario.comentario == None %}
+				No se ha hecho ningún comentario.
+			{% else %}
+				{{comentario.comentario}}
+			{%endif%}
+			{% endif %}
+		</p>
+		<div class="opinion_info"><div class="movie-stars">&#9733; {{comentario.calificacion}} Estrellas</div></div>
+	</div>
+		<br>
+	{%endfor%}
+</div>
+</div>
+
+<style type="text/css">.viewSpoiler{color: red}</style>
+{%endblock%}

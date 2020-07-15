@@ -1,53 +1,117 @@
+from flaskps.models.autor import Autor
+from flaskps.models.editorial import Editorial
+from flaskps.models.genero import Genero
+
+
 class Trailer(object):
     db = None
+
     @classmethod
-    def setTrailer(cls,data, titulo):
-        sql = ' INSERT INTO trailer (titulo, archivo) VALUES (%s, %s)'
-        data = (titulo, data.get('archivo'))
+    def setTrailer(cls,data,archivo):
+    	sql = 'INSERT INTO trailer (titulo, archivo) VALUES (%s,%s)'
+    	data = (data.get('titulo'),archivo)
+    	cursor = cls.db.cursor()
+    	cursor.execute(sql, data)
+    	cls.db.commit()
+    	return True
+
+
+    @classmethod
+    def setTrailerAsociado(cls,data,archivo,isbn):
+        sql = 'INSERT INTO trailer (titulo, archivo, isbn) VALUES (%s,%s,%s)'
+        data = (data.get('titulo'),archivo,isbn)
         cursor = cls.db.cursor()
-        cursor.execute(sql,data)
-        cls.db.commit()
-        return True
-
-
-    @classmethod
-    def create(cls,data,filename):
-        sql = ' INSERT INTO trailer (titulo,archivo) VALUES(%s,%s)'
-        data = (data.get('titulo'),filename)
-        cursor = cls.db.cursor()
-        cursor.execute(sql,data)
-        cls.db.commit()
-        return True    
-
-
-    @classmethod
-    def updateTrailer(cls,tituloNue,id):
-        sql = 'UPDATE trailer SET titulo = %s WHERE id = %s'
-        data = (tituloNue, id)
-        cursor = cls.db.cursor()    
         cursor.execute(sql, data)
         cls.db.commit()
         return True
 
-    @classmethod
-    def deleteTrailer(cls,id):
-    	sql = "DELETE FROM trailer where id = %s"
-    	cursor = cls.db.cursor()
-    	cursor.execute(sql,id)
-    	cls.db.commit()
-    	return True
 
     @classmethod
-    def getTrailers(cls):
-    	sql = 'SELECT * from trailer'
-    	cursor = cls.db.cursor()
-    	cursor.execute(sql)
-    	return cursor.fetchall()
-
-
-    @classmethod
-    def getTrailerByID(cls,id):
-        sql = 'SELECT * FROM trailer WHERE id = %s'
+    def allMeta(cls):
+        sql = 'SELECT * FROM metadato;'
         cursor = cls.db.cursor()
-        cursor.execute(sql, id)
+        cursor.execute(sql)
+        return cursor.fetchall()
+
+
+    @classmethod
+    def getTrailerByID(cls,idTrailer):
+        sql = 'SELECT * FROM trailer WHERE ID = %s'
+        cursor = cls.db.cursor()
+        cursor.execute(sql, (idTrailer))
+        return cursor.fetchall()
+
+    @classmethod
+    def tituloById(cls,idTrailer):
+        sql = 'SELECT titulo FROM trailer WHERE ID = %s'
+        cursor = cls.db.cursor()
+        cursor.execute(sql, (idTrailer))        
         return cursor.fetchone()
+
+    @classmethod
+    def filenameById(cls,idTrailer):
+        sql = 'SELECT archivo FROM trailer WHERE ID = %s'
+        cursor = cls.db.cursor()
+        cursor.execute(sql, (idTrailer))        
+        return cursor.fetchone()
+
+
+
+    @classmethod
+    def tituloByIsbn(cls,isbn):
+        sql = 'SELECT titulo FROM trailer WHERE isbn = %s'
+        cursor = cls.db.cursor()
+        cursor.execute(sql, (isbn))        
+        return cursor.fetchone()
+
+    @classmethod
+    def filenameByIsbn(cls,isbn):
+        sql = 'SELECT archivo FROM trailer WHERE isbn = %s'
+        cursor = cls.db.cursor()
+        cursor.execute(sql, (isbn))        
+        return cursor.fetchone()
+
+
+    @classmethod
+    def updateFilename(cls,archivo,idTrailer):
+        sql = 'UPDATE trailer SET archivo = %s WHERE ID = %s'
+        data = (archivo,idTrailer)
+        cursor = cls.db.cursor()
+        cursor.execute(sql, data)
+        cls.db.commit()
+        return True
+
+
+    @classmethod
+    def updateTitle(cls,idTrailer,titulo):
+        sql = 'UPDATE trailer SET titulo = %s WHERE ID = %s'
+        data = (titulo,idTrailer)
+        cursor = cls.db.cursor()
+        cursor.execute(sql, data)
+        cls.db.commit()
+        return True
+
+
+
+    @classmethod
+    def deleteTrailer(cls,idTrailer):
+        sql = "DELETE FROM trailer WHERE ID = %s"
+        cursor = cls.db.cursor()
+        cursor.execute(sql, idTrailer)
+        cls.db.commit()
+        return True
+
+
+    @classmethod
+    def existe(cls,isbn):
+        sql = "SELECT * FROM trailer WHERE isbn = %s"
+        cursor = cls.db.cursor()
+        cursor.execute(sql, (isbn))        
+        return cursor.fetchall()
+
+    @classmethod
+    def getByISBN(cls,isbn):
+        sql = 'SELECT * FROM trailer WHERE isbn = %s'
+        cursor = cls.db.cursor()
+        cursor.execute(sql, (isbn))
+        return cursor.fetchall()

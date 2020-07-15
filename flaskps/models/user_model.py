@@ -143,7 +143,3 @@ class Usuario(object):
         cursor.execute(sql, ("basic", id))
         cls.db.commit()
         return True
-
-        
-
-    

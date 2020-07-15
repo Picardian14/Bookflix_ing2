@@ -60,8 +60,19 @@ def delete(id):
 
 def to_premium():    
     set_db()
-    Usuario.toPremium(session['usuario_id'])
+    idUser=session['usuario_id']
+    Usuario.toPremium(idUser)
+    flash('El usuario es premium.')
     return redirect(url_for("perfil_menu"))
+
+
+def new_favorite(isbn):
+    set_db()
+    user_id= session['usuario_id']
+    Book.marcarFavorito(isbn, user_id)
+    flash("Libro añadido a favoritos.")
+    return redirect(url_for("book_view", isbn=isbn))
+
 
 def to_basic():    
     set_db()

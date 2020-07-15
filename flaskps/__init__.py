@@ -11,6 +11,7 @@ from flaskps.resources import editorial
 from flaskps.resources import genero
 from flaskps.resources import novedad
 from flaskps.resources import trailer
+from flaskps.resources import comentario
 from flaskps.resources import perfil
 
 from flaskps.models.configuracion import Configuracion
@@ -40,9 +41,6 @@ app.add_url_rule("/configuration/toggle", 'configuracion_toggleActive', configur
 app.add_url_rule("/configuration/edit", 'configuracion_edit', configuracion.editarInformacion, methods=['POST'])
 app.add_url_rule("/configuration/edit", 'configuracion_render_edit', configuracion.renderEditarInformacion)
 app.add_url_rule("/config", 'configuracion_changePage', configuracion.changePage, methods=['POST'])
-#app.add_url_rule("/configuration/listadoUsers", 'configuracion_render_listado', configuracion.renderlistadoUsuarios)
-#app.add_url_rule("/configuration/listadoVisitas", 'configuracion_render_visitas', configuracion.renderlistadoVisitas)
-
 # Usuarios
 
 #Metodos para mostrar tablas de usuarios
@@ -50,12 +48,19 @@ app.add_url_rule("/usuarios", 'user_resource_index', user_resource.index)
 app.add_url_rule("/usuarios/search_by_username", 'user_resource_indexUser', user_resource.indexUser, methods=['POST'])
 app.add_url_rule("/usuarios/index_by_active", 'user_resource_indexActive', user_resource.indexActive)
 app.add_url_rule("/usuarios/index_by_inactive", 'user_resource_indexInactive', user_resource.indexInactive)
+
+
 #CRUD de usuarios
 app.add_url_rule("/usuarios", 'user_resource_create', user_resource.create, methods=['POST']) #realiza creacion en el modelo
 app.add_url_rule("/usuario/new", 'user_resource_new', user_resource.new) #levanta vista de creacion
 app.add_url_rule("/usuarios/editar/<int:id>", 'user_resource_edit', user_resource.edit)#levanta vista de edicion
 app.add_url_rule("/editar/<int:id>", 'user_resource_execute_edit', user_resource.executeEdit, methods=['POST']) #crea edicion en el modelo
+
+
+
 app.add_url_rule("/usuarios/mostrar/<int:id>", 'user_resource_show', user_resource.show) #mostrar datos de usuario
+app.add_url_rule("/usuarios/mostrar/<int:id>/premium", 'turnpremium', perfil.to_premium, methods=['POST'])
+
 app.add_url_rule("/usuarios/delete/<int:id>", 'user_resource_delete', user_resource.delete, methods=['POST', 'GET'])#Baja logica
 app.add_url_rule("/usuarios/active/<int:id>", 'user_resource_active', user_resource.active)#activacion de baja logica
 
@@ -64,21 +69,24 @@ app.add_url_rule("/usuarios/asignar", 'user_resource_indexAssign', user_resource
 app.add_url_rule("/usuarios/asignar/<string:user>/<string:rol>", 'user_resource_asignarRol', user_resource.assign) #asignar un rol
 app.add_url_rule("/usuarios/eliminarRol/<string:user>/<string:rol>", 'user_resource_deleteRol', user_resource.deleteRol) #desasignar un rol
 
+
+
+
+
+#HASTA ACA FUNCA NO TOQUES NADA 
 #CRUD de libros
 app.add_url_rule("/libros/new/<string:isbn>", 'book_new', book.new)
 app.add_url_rule("/libros/<string:isbn>", 'book_create', book.create, methods=['POST'])
+
 app.add_url_rule("/librosnew_chapter/<string:isbn>", 'book_new_chapter', book.new_chapter)
 app.add_url_rule("/librosnew_chapter/<string:isbn>", 'book_create_chapter', book.create_chapter, methods=['POST'])
+
+
 app.add_url_rule("/librosEliminar/<string:isbn>", 'book_delete', book.delete)
 app.add_url_rule("/librosdel_chap_menu/<string:isbn>", 'book_delete_menu', book.render_delete_menu)
 app.add_url_rule("/librosdel_chap/<string:isbn>/<int:num>", 'book_delete_chap', book.delete_chapter)
-#Gestion de fechas
-app.add_url_rule("/librosfecha/<string:isbn>", 'book_date_menu', book.date_menu)
-app.add_url_rule("/librosfechabook/<string:isbn>", 'book_date_book', book.date_render_book)
-app.add_url_rule("/librosfechabook/<string:isbn>/<int:num>", 'book_date_chap', book.date_render_chap)
-app.add_url_rule("/librosfechabook/<string:isbn>", 'book_date_mod_book', book.date_book, methods=['POST'])
-app.add_url_rule("/librosfechabook/<string:isbn>/<int:num>", 'book_date_mod_chap', book.date_chap, methods=['POST'])
-#Metadatos
+
+#METADATOS
 app.add_url_rule("/libros/meta", 'book_meta', book.render_meta)
 app.add_url_rule("/libros/meta", 'book_load_meta', book.load_meta, methods=['POST'])
 app.add_url_rule("/libros/editar_meta/<string:isbn>", "book_meta_edit", book.edit_meta)
@@ -89,10 +97,91 @@ app.add_url_rule("/libros", 'book_menu', book.render_menu, methods=['POST', 'GET
 app.add_url_rule("/librosHistorial", 'book_historial', book.render_historial)
 app.add_url_rule("/librosFavoritos", 'book_favoritos', book.render_favoritos)
 app.add_url_rule("/libros_busqueda", 'book_search', book.search, methods=['POST'])
+
+
+app.add_url_rule("/librosview/<string:isbn>", 'book_view', book.book_view)
+app.add_url_rule("/librosview/<string:isbn>", 'comment_book',book.comment_book, methods=['POST', 'GET'])
+app.add_url_rule("/librosview/<string:isbn>/delete/<string:idCom>", 'delete_comment',book.delete_comment, methods=['POST'])
+app.add_url_rule("/librosview/<string:isbn>/spoiler/<string:idCom>", 'spoiler_comment',book.is_spoiler, methods=['POST'])
+app.add_url_rule("/librosview/<string:isbn>/favorite", 'mark_favorite',book.new_favorite, methods=['POST'])
+app.add_url_rule("/librosview/<string:isbn>/unfavorite", 'quit_favorite',book.quit_favorite, methods=['POST'])
+
+
+
+app.add_url_rule("/librosFavoritos", 'book_favorites', book.render_favoritos)
+
+
+
 app.add_url_rule("/librosver/<string:isbn>", 'book_open', book.open_book)
 app.add_url_rule("/librosver_cap/<string:isbn>", 'book_cap_menu', book.open_cap_menu)
 app.add_url_rule("/librosver_cap_abrir/<string:isbn>/<int:num>", 'book_open_cap', book.open_cap)
 app.add_url_rule("/librosver_any/<string:isbn>/<string:name>", 'book_open_any', book.open_any)
+
+
+
+
+
+
+
+#CRUD novedades
+app.add_url_rule("/novedades/new", "novedad_new", novedad.new)
+app.add_url_rule("/novedades/list", "novedad_list", novedad.list)
+app.add_url_rule("/novedades/create", "novedad_create", novedad.create,methods=['POST'])
+app.add_url_rule("/novedades", "novedad_index", novedad.index)
+app.add_url_rule("/novedades/edit/<int:id>", "novedad_renderEdit", novedad.renderEdit_novedad)
+app.add_url_rule("/novedades/edit/<int:id>", "novedad_edit", novedad.edit_novedad, methods=['POST'])
+app.add_url_rule("/novedades/remove/<int:id>", "novedad_remove", novedad.remove_novedad)
+
+
+
+
+
+
+#CRUD perfiles
+app.add_url_rule("/perfiles/new", "perfil_new", perfil.new)
+app.add_url_rule("/perfiles/create", "perfil_create", perfil.create,methods=['POST'])
+app.add_url_rule("/perfilesdelete/<int:id>", "perfil_delete", perfil.delete, methods=['POST', 'GET'])
+app.add_url_rule("/perfiles", "perfil_menu", perfil.render_menu)
+app.add_url_rule("/perfiles/<int:id>", "perfil_select", perfil.select)
+#Cambio de Plan
+app.add_url_rule("/perfilesTopremium", "perfil_to_premium", perfil.to_premium)
+app.add_url_rule("/perfilesTobasic", "perfil_to_basic", perfil.to_basic)
+
+
+
+
+
+
+##############################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#gestion de fechas
+app.add_url_rule("/librosfecha/<string:isbn>", 'book_date_menu', book.date_menu)
+app.add_url_rule("/librosfechabook/<string:isbn>", 'book_date_book', book.date_render_book)
+app.add_url_rule("/librosfechabook/<string:isbn>/<int:num>", 'book_date_chap', book.date_render_chap)
+app.add_url_rule("/librosfechabook/<string:isbn>", 'book_date_mod_book', book.date_book, methods=['POST'])
+app.add_url_rule("/librosfechabook/<string:isbn>/<int:num>", 'book_date_mod_chap', book.date_chap, methods=['POST'])
+
+
 #CRUD autor
 app.add_url_rule("/autor/new", 'author_new', autor.new)
 app.add_url_rule("/autor/create", "author_create", autor.create,methods=['POST'])
@@ -106,31 +195,30 @@ app.add_url_rule("/genero/create", "genero_create", genero.create,methods=['POST
 
 #CRUD novedades
 app.add_url_rule("/novedades/new", "novedad_new", novedad.new)
-app.add_url_rule("/novedades/list", "novedad_list", novedad.list)
 app.add_url_rule("/novedades/create", "novedad_create", novedad.create,methods=['POST'])
 app.add_url_rule("/novedades", "novedad_index", novedad.index)
-app.add_url_rule("/novedades/edit/<int:id>", "novedad_renderEdit", novedad.renderEdit_novedad)
-app.add_url_rule("/novedades/edit/<int:id>", "novedad_edit", novedad.edit_novedad, methods=['POST'])
-app.add_url_rule("/novedades/remove/<int:id>", "novedad_remove", novedad.remove_novedad)
+
+
 
 #CRUD trailers
-app.add_url_rule("/trailers", 'trailer_menu', trailer.render_menu)
-app.add_url_rule("/trailers/new", 'trailer_new', trailer.new)
-app.add_url_rule("/trailers/remove/<int:id>", "trailer_remove", trailer.remove_trailer)
-app.add_url_rule("/trailers/edit_trailer/<int:id>", "trailer_edit", trailer.edit_trailer)
-app.add_url_rule("/trailers/edit_trailer/<int:id>", "trailer_load_edit", trailer.load_edit, methods=['POST'])
-app.add_url_rule("/trailer/create", 'trailer_create', trailer.render_trailer)
-app.add_url_rule("/trailer/create", 'trailer_load', trailer.load_trailer, methods=['POST'])
+app.add_url_rule("/trailers/new", 'trailer_new', trailer.render_trailer)
+app.add_url_rule("/trailers/new", 'trailer_load', trailer.load_trailer,methods=['POST'])
 
-#CRUD perfiles
-app.add_url_rule("/perfiles/new", "perfil_new", perfil.new)
-app.add_url_rule("/perfiles/create", "perfil_create", perfil.create,methods=['POST'])
-app.add_url_rule("/perfilesdelete/<int:id>", "perfil_delete", perfil.delete, methods=['POST', 'GET'])
-app.add_url_rule("/perfiles", "perfil_menu", perfil.render_menu)
-app.add_url_rule("/perfiles/<int:id>", "perfil_select", perfil.select)
-#Cambio de Plan
-app.add_url_rule("/perfilesTopremium", "perfil_to_premium", perfil.to_premium)
-app.add_url_rule("/perfilesTobasic", "perfil_to_basic", perfil.to_basic)
+app.add_url_rule("/trailers/newAsociado/<string:isbn>", 'trailer_book_new', trailer.new_asociado)
+app.add_url_rule("/trailers/newAsociado/<string:isbn>", 'trailer_load_asociado', trailer.load_asociado,methods=['POST'])
+
+app.add_url_rule("/trailers/edit/<string:tID>", 'trailer_edit', trailer.edit_trailer)
+app.add_url_rule("/trailers/edit/<string:tID>", 'trailer_load_edit', trailer.load_edit,methods=['POST'])
+
+
+app.add_url_rule("/trailers/delete/<string:tID>", "trailer_remove", trailer.remove_view)
+app.add_url_rule("/trailers/delete/<string:tID>", "trailer_remove_done", trailer.remove_done,methods=['POST'])
+
+app.add_url_rule("/trailers/view/<string:tID>", 'trailer_view', trailer.open_trailer)
+app.add_url_rule("/trailers/viewAsociado/<string:isbn>", 'trailer_view_asociado', trailer.open_trailer_asociado)
+
+
+
 
 
 @app.route("/")
@@ -141,7 +229,7 @@ def hello():
         if not authenticated(session):
             return render_template('home.html', titulo=info.get('titulo'), descripcion=info.get('descripcion'), mail = info.get('mail_orquesta'))
         else:
-            return redirect(url_for("book_menu"))
+            return redirect(url_for("user_resource_index"))
     else:
         return render_template('home_inactive.html') 
      

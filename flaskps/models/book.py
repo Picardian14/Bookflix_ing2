@@ -1,9 +1,156 @@
 from flaskps.models.autor import Autor
 from flaskps.models.editorial import Editorial
 from flaskps.models.genero import Genero
-
+from flaskps.models.comentario import Comentario
+from flaskps.models.user_model import Usuario
 class Book(object):
     db = None
+
+    @classmethod
+    def marcarFavorito(cls,isbn, userID, perfil_id):
+        sql = 'INSERT INTO favoritos(isbn,usuario_id, perfil_id) VALUES (%s,%s, %s)'
+        data = (isbn, userID, perfil_id)
+        cursor = cls.db.cursor()
+        cursor.execute(sql,data)
+        cls.db.commit()
+        return True
+
+    @classmethod
+    def esFavorito(cls,isbn, userID):
+        sql = 'SELECT * FROM favoritos WHERE isbn = %s AND perfil_id= %s'
+        data = (isbn, userID)
+        cursor = cls.db.cursor()
+        cursor.execute(sql,data)
+        row = cursor.fetchone()
+        if row == None:
+            return False
+        else:
+            return True
+
+    @classmethod
+    def deleteFavoritoByISBN(cls,isbn):
+        sql = "DELETE FROM favoritos WHERE isbn = %s"
+        data = (isbn)
+        cursor = cls.db.cursor()
+        cursor.execute(sql, data)
+        cls.db.commit()
+        return True
+
+
+    @classmethod
+    def getFavoritoMeta(cls,isbn):
+        sql = 'SELECT * FROM metadato WHERE isbn = %s'
+        data = (isbn)
+        cursor = cls.db.cursor()
+        cursor.execute(sql,data)
+        return cursor.fetchall
+        
+    @classmethod
+    def deleteFavorito(cls, isbn, userID):
+        sql = "DELETE FROM favoritos WHERE isbn = %s AND perfil_id= %s"
+        data = (isbn,userID)
+        cursor = cls.db.cursor()
+        cursor.execute(sql, data)
+        cls.db.commit()
+        return True
+
+    @classmethod
+    def getFavoritos(cls,userID):
+        sql = "SELECT * FROM favoritos WHERE perfil_id=%s"
+        data = (userID)
+        cursor = cls.db.cursor()
+        cursor.execute(sql,data)
+        return cursor.fetchall()
+
+    @classmethod
+    def existeTrailer(cls,isbn):
+        sql = "SELECT * FROM trailer WHERE isbn = %s"
+        cursor = cls.db.cursor()
+        cursor.execute(sql, (isbn))        
+        return cursor.fetchall()
+
+    @classmethod
+    def getTrailers(cls):
+        sql = 'SELECT * FROM trailer'
+        cursor = cls.db.cursor()
+        cursor.execute(sql)
+        return cursor.fetchall()
+
+    @classmethod
+    def allUsers(cls):
+        sql = 'SELECT * FROM usuario;'
+        cursor = cls.db.cursor()
+        cursor.execute(sql)
+        return cursor.fetchall()
+
+    @classmethod
+    def getByISBN(cls,isbn):
+        sql = 'SELECT * FROM comentarios WHERE isbn = %s'
+        data = (isbn)
+        cursor = cls.db.cursor()
+        cursor.execute(sql,data)
+        return cursor.fetchall()
+
+
+    @classmethod     
+    def getComentarios(cls):
+        sql = 'SELECT * FROM comentarios'
+        cursor = cls.db.cursor()
+        cursor.execute(sql)
+        return cursor.fetchall()  
+
+
+
+    @classmethod
+    def comment_book(cls,comment,isbn,calificacion,today,user_id, perfil_id):
+        sql = "INSERT INTO comentarios(comentario,isbn,calificacion,fecha,usuario_id, perfil_id) VALUES (%s,%s,%s,%s,%s)"
+        data = (comment,isbn,calificacion,today,user_id, perfil_id)
+        cursor = cls.db.cursor()
+        cursor.execute(sql,data)
+        cls.db.commit()
+        return True
+
+
+    @classmethod
+    def setPuntuacion(cls,isbn,calificacion,today,user_id, perfil_id):
+        sql = "INSERT INTO comentarios(isbn,calificacion,fecha,usuario_id, perfil_id) VALUES (%s,%s,%s,%s)"
+        data = (isbn,calificacion,today,user_id, perfil_id)
+        cursor = cls.db.cursor()
+        cursor.execute(sql,data)
+        cls.db.commit()
+        return True
+
+
+
+    @classmethod
+    def deleteComment(cls, idComment):
+        sql = "DELETE FROM comentarios WHERE id = %s"
+        cursor = cls.db.cursor()
+        cursor.execute(sql, idComment)
+        cls.db.commit()
+        return True
+
+    @classmethod
+    def deleteCommentByISBN(cls, isbn):
+        sql = "DELETE FROM comentarios WHERE isbn = %s"
+        cursor = cls.db.cursor()
+        cursor.execute(sql, isbn)
+        cls.db.commit()
+        return True
+
+
+
+    @classmethod
+    def isSpoiler(cls,idComment):
+        sql = 'UPDATE comentarios SET spoiler = 1 WHERE id = %s'
+        data = (idComment)
+        cursor = cls.db.cursor()
+        cursor.execute(sql,data)
+        cls.db.commit()
+        return True
+
+
+
     @classmethod
     def create(cls, data, filename,isbn):
         sql = ' INSERT INTO libro (isbn, archivo, available_from, available_to) VALUES (%s, %s, %s,%s)'

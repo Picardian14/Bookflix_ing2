@@ -1,0 +1,26 @@
+{% extends "user/userBase.html" %}
+
+{% block title %}
+
+    <title>Libros favoritos - Bookflix</title>
+
+{% endblock %}
+
+{% block main %}
+<div class="latestBooks"><h1>Libros favoritos:</h1>
+	{% if fav%}
+	{% for favBook in fav %}
+	 <div class="bookBox">
+	    <div class="bookInfo">
+	        <a href=""><h3></h3></a>
+	        <p class="bookPlot"></p>
+	        <p class="bookData"></p>
+	    </div>
+	</div>
+		{{favBook.isbn}}
+	{% endfor %}
+	{%else%}
+		No hay libros favoritos.
+	{%endif%}
+</div>
+{%endblock%}

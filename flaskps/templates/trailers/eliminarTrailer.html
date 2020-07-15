@@ -1,0 +1,19 @@
+{% extends "/user/index.html" %}
+
+{% block title %}
+
+    <title>Eliminar Trailer</title>
+
+{% endblock %}
+
+
+
+{% block main %}
+<div class="latestBooks metaView">
+    <h1>¿Seguro que quiere eliminar el trailer?</h1>
+    <form method="POST" action="{{ url_for('trailer_remove_done', tID = id) }}" enctype="multipart/form-data">
+            <button type="submit" class="btn btn-light btn-block">Eliminar Trailer</button>
+            <center><a href="/libros">Cancelar</a></center>
+    </form>                             
+</div>
+{% endblock %}

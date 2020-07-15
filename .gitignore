@@ -2,3 +2,4 @@
 /flaskps/static/uploads
 /flaskps/config/*
 flaskps/config/development.py
+.vscode/

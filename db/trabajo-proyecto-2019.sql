@@ -65,8 +65,8 @@ CREATE TABLE `perfil`(
   CONSTRAINT FK_perfil_usuario_id FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-DROP TABLE IF EXISTS `favorito`;
 
+DROP TABLE IF EXISTS `favorito`;
 CREATE TABLE `favorito`(  
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `isbn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -112,15 +112,14 @@ CREATE TABLE `novedad`(
 
 
 DROP TABLE IF EXISTS `trailer`;
-
 CREATE TABLE `trailer`(
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `titulo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `isbn` varchar(255) COLLATE utf8_unicode_ci,
   `archivo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  CONSTRAINT FK_trailer_isbn FOREIGN KEY (isbn) REFERENCES metadato(isbn) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 
 
 DROP TABLE IF EXISTS `libro`;
@@ -198,27 +197,27 @@ INSERT INTO `usuario` VALUES (3,'martin@gmail.com','33123123','lorenzo','1234',1
 UNLOCK TABLES;
 
 LOCK TABLES `autor` WRITE;
-/*!40000 ALTER TABLE `metadato` DISABLE KEYS */;
+/*!40000 ALTER TABLE `autor` DISABLE KEYS */;
 INSERT INTO `autor` VALUES (1,'Tolkien');
 INSERT INTO `autor` VALUES (2,'Stephen king');
 INSERT INTO `autor` VALUES (3,'Michael Bay');
-/*!40000 ALTER TABLE `metadato` ENABLE KEYS */;
+/*!40000 ALTER TABLE `autor` ENABLE KEYS */;
 UNLOCK TABLES;
 
 LOCK TABLES `editorial` WRITE;
-/*!40000 ALTER TABLE `metadato` DISABLE KEYS */;
+/*!40000 ALTER TABLE `editorial` DISABLE KEYS */;
 INSERT INTO `editorial` VALUES (1,'Lex');
 INSERT INTO `editorial` VALUES (2,'Planeta');
 INSERT INTO `editorial` VALUES (3,'SM');
-/*!40000 ALTER TABLE `metadato` ENABLE KEYS */;
+/*!40000 ALTER TABLE `editorial` ENABLE KEYS */;
 UNLOCK TABLES;
 
 LOCK TABLES `genero` WRITE;
-/*!40000 ALTER TABLE `metadato` DISABLE KEYS */;
+/*!40000 ALTER TABLE `genero` DISABLE KEYS */;
 INSERT INTO `genero` VALUES (1,'Fantasia');
 INSERT INTO `genero` VALUES (2,'Terror');
 INSERT INTO `genero` VALUES (3,'Accion');
-/*!40000 ALTER TABLE `metadato` ENABLE KEYS */;
+/*!40000 ALTER TABLE `genero` ENABLE KEYS */;
 UNLOCK TABLES;
 
 LOCK TABLES `metadato` WRITE;
@@ -354,3 +353,21 @@ LOCK TABLES `paginado` WRITE;
 INSERT INTO `paginado` VALUES (1, 5, 0);
 UNLOCK TABLES;
 
+-- -----------------------------------------------------
+-- Table `comentarios`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `comentarios` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `comentario` VARCHAR(255),
+  `fecha` DATE NOT NULL,
+  `usuario_id` INT NOT NULL,
+  `perfil_id` INT NOT NULL, 
+  `calificacion` INT NOT NULL,
+  `isbn` varchar(255) COLLATE utf8_unicode_ci,
+  `spoiler` tinyInt(1) NOT NULL DEFAULT '0',
+  
+  PRIMARY KEY (`id`),
+  CONSTRAINT FK_comentarios_perfil_id FOREIGN KEY (perfil_id) REFERENCES perfil(id) ON DELETE CASCADE,
+  CONSTRAINT FK_comentarios_isbn FOREIGN KEY (isbn) REFERENCES metadato(isbn),
+  CONSTRAINT FK_comentarios_usuario_id FOREIGN KEY (usuario_id) REFERENCES usuario(id)
+  );

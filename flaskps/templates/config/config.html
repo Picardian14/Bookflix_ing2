@@ -1,3 +1,139 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block title %}
+
+        <title>Configuracion</title>
+
+    {% endblock %}
+
+
+    {% block head %}
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/cover/">
+        <link href="../static/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+        <link href="../static/css/mediaQ.css" rel="stylesheet">
+        <link href="../static/css/cover.css" rel="stylesheet">
+        <script src="../static/js/tabla.js"></script>
+        <style href="../../static/css/text.css" rel="stylesheet"></style>
+        <script src="../static/js/__code.jquery.com_jquery-1.11.1.js"></script>
+        <script src="../static/js/bootstrap.min.js"></script>
+
+    {% endblock %}
+
+</head>
+<body class="text-center">
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+
+    {% block navbar %}
+
+        <header class="masthead mb-auto">
+            <div class="inner">
+                <nav class="nav nav-masthead justify-content-center">
+                    <a class="nav-link" href="/usuarios">Usuarios</a>
+                    {% if adm %}
+                        <a class="nav-link active" href="/configuracion">Configuracion</a>
+                    {% endif %}
+                    <a class="nav-link" href="/cerrar_sesion">Cerrar Sesion</a>
+                </nav>
+            </div>
+        </header>
+
+    {% endblock %}
+
+    {% block alert %}
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <br>
+                <ul class=flashes>
+                    <div class="alert alert-primary" role="alert">{{ messages[-1] }}</div>
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+    {% endblock %}
+
+    <main role="main" class="inner cover">
+
+        {% block main %}
+
+        {% if permiso_habilitar: %}
+            {% if inhabilitado: %}
+                <a href="{{ url_for('configuracion_toggleActive') }}">Habilitar Sitio</a>
+            {% else %}
+                <a href="{{ url_for('configuracion_toggleActive') }}">Deshabilitar Sitio</a>
+            {% endif %}
+            <br>
+        {% endif %}
+        <br>
+           <a href="{{ url_for('user_resource_indexAssign') }}">Asignar Roles</a>
+            <br>
+        <br>
+        {% if permiso_info: %}
+            <h2>Cambiar Informacion de la pagina</h2>
+            <form action="{{ url_for('configuracion_edit') }}" method="POST" class="navbar-form navbar-left">
+            <div class="form-group">
+                <a>Titulo</a>
+                <input type="text" required class="form-control" name="title" value="{{ title }}" placeholder="{{ title }}">
+                <br>
+                <a>Description</a>
+                <br>
+                <input type="text"  required class="form-control" name="description" value="{{ description }}"
+                       placeholder="{{ description }}">
+                <br>
+                <a>Mail</a>
+                <br>
+                <input type="text" required class="form-control" name="mail_orquesta" value="{{ mail }}"
+                       placeholder="{{ mail }}">
+            </div>
+            <button type="submit" class="btn btn-link">Cambiar</button>
+            </form>
+            {% endif %}
+            <br>
+            <br>
+            {% if permiso_paginado: %}
+            <form action="{{ url_for('configuracion_changePage') }}" method="POST" class="navbar-form navbar-left">
+                <div class="form-group">
+                    <select name="page">
+                        <option value="1">1</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-link">Cambiar Paginado</button>
+            </form>
+            {% endif %}
+            <br>
+            <br>
+
+
+
+        {% endblock %}
+
+    </main>
+
+    <footer class="mastfoot mt-auto">
+        <div class="inner">
+
+            {% block footer %}
+
+                <p>Proyecto de Software 2019 - Grupo 34</p>
+
+            {% endblock %}
+
+        </div>
+    </footer>
+
+</div>
+</body>
+</html>
+=======
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -142,3 +278,4 @@
 </div>
 </body>
 </html>
+>>>>>>> 97feaabfc4a38a81a336a08a3ffd237c29be98d9

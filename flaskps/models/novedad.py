@@ -27,13 +27,25 @@ class Novedad(object):
         return True
 
     @classmethod
-    def editNovedad(cls, data, id):
-        sql = "UPDATE novedad SET titulo = %s, descripcion = %s WHERE id= %s"
-        data = (data.get('titulo'),data.get('descripcion'),id)
+    def editDetalle(cls, desc, id):
+        sql = "UPDATE novedad SET descripcion = %s WHERE id= %s"
+        data = (desc,id)
         cursor = cls.db.cursor()
         cursor.execute(sql,data)
         cls.db.commit()
         return True
+
+
+    @classmethod
+    def editTitulo(cls,titulo,id):
+        sql = "UPDATE novedad SET titulo = %s WHERE id= %s"
+        data = (titulo,id)
+        cursor = cls.db.cursor()
+        cursor.execute(sql,data)
+        cls.db.commit()
+        return True
+
+
 
     #GETS
     @classmethod
@@ -49,4 +61,3 @@ class Novedad(object):
         sql = 'SELECT * FROM novedad WHERE id = %s'
         cursor = cls.db.cursor()
         cursor.execute(sql, id)
-        return cursor.fetchone()

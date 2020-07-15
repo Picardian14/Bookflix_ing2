@@ -1,51 +1,31 @@
-{% extends "trailers/trailerBase.html" %}
+{% extends "user/userBase.html" %}
 
 {% block title %}
 
-    <title>Nuevo Trailer</title>
+    <title>Cargar Trailer - Bookflix</title>
 
-{% endblock %}
-
-{% block navbar %}
-    <header class="masthead mb-auto">
-        <div class="inner">
-            <nav class="nav nav-masthead justify-content-center">
-                <a class="nav-link active" href="/usuarios">Usuarios</a>
-                <a class="nav-link active" href="/usuarios/mostrar/{{user_id}}">Ver mi perfil</a>
-                {% if adm %}
-                <a class="nav-link" href="/configuracion">Configuracion</a>
-                {% endif %}
-                <a class="nav-link" href="/cerrar_sesion">Cerrar Sesion</a>
-            </nav>
-        </div>
-    </header>
 {% endblock %}
 
 {% block main %}
-
-    <h4 class="card-title mt-3 text-center">Ingrese sus datos</h4>
-                <p class="text-center">Bookflix</p>
-                <p class="divider-text">
-                </p>
-                <form action="{{ url_for('trailer_create') }}" onsubmit="return validate();" method="POST" enctype="multipart/form-data">    
-
-                    <div class="form-group input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
-                        </div>
-                        <input required name="titulo" class="form-control" placeholder="Titulo del trailer" type="text">
-                    </div> <!-- form-group// -->
-
-                    <div class="form-group input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
-                        </div>
-                        <input required name="archivo" class="form-control" type="file">
-                    </div> <!-- form-group// -->
-                                    
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-light btn-block"> Cargar Trailer  </button>
-                    </div> <!-- form-group// -->
-                </form>
-
+<div class="latestBooks loginView">
+    <h1>Cargar Trailer:</h1>
+    <form action="{{ url_for('trailer_load') }}" method="POST" enctype="multipart/form-data">
+        <div class="form-group input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="fa fa-align-justify"></i> </span>
+            </div>
+            <input required type="text" placeholder="Titulo" class="form-control" name="titulo">
+        </div>
+        <div class="form-group input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="fa fa-file-pdf"></i> </span>
+            </div>
+            <input required name="archivo" class="form-control"type="file"></input>                                
+        </div> <!-- form-group// -->
+        <div class="form-group">
+            <button type="submit" class="btn btn-light btn-block"> Crear Trailer  </button>
+            <center><a href="/libros">Cancelar</a></center>
+        </div> <!-- form-group// -->
+    </form>
+</div>          
 {% endblock %}

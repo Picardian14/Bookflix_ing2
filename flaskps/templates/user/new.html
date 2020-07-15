@@ -1,3 +1,4 @@
+  
 {% extends "user/userBase.html" %}
 
 {% block title %}
@@ -6,24 +7,22 @@
 
 {% endblock %}
 
-{% block navbar %}
-    <header class="masthead mb-auto">
-        <div class="inner">
-            <nav class="nav nav-masthead justify-content-center">
-                <a class="nav-link" href="/usuarios">Cancelar</a>
-            </nav>
-        </div>
-    </header>
-
+{% block superNav %}
+    <div id="superNav" style="color: #4c394e;">ALGO</div>
 {% endblock %}
 
-{% block main %}
+{% block navbar %}
+    <img src="https://i.imgur.com/cACkaa3.png" class="logo_img">
+    <div id="navbar">
+        <a href="/iniciar_sesion"><i class="fas fa-users" aria-hidden="true"></i> Ingreso</a>
+    </div>
+{% endblock %}
 
-    <h4 class="card-title mt-3 text-center">Ingrese Sus Datos</h4>
-                <p class="text-center">Bookflix</p>
-                <p class="divider-text">
-                </p>
-                <form action="{{ url_for('user_resource_create') }}" onsubmit="return validateDate();" method="POST">
+
+{% block main %}
+<div class="latestBooks metaView" style="width: 600px!important">
+    <h1>Registrar usuario:</h1>
+    <form action="{{ url_for('user_resource_create') }}" onsubmit="return validateDate();" method="POST">
                     <div class="form-group input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"> <i class="fa fa-user"></i> </span>
@@ -55,7 +54,7 @@
                         <input required name="last_name" class="form-control" placeholder="Apellido" type="text">
                     </div>                    
                     <br>
-                    <h6>Datos de Tarjeta</h6>
+                    <h1>Datos de Tarjeta</h1>
                     <div class="form-group input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
@@ -84,7 +83,7 @@
                         <button type="submit" class="btn btn-light btn-block"> Crear usuario  </button>
                     </div> <!-- form-group// -->
                 </form>
-
+</div>
 {% endblock %}
 
 
