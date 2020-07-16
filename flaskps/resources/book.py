@@ -54,13 +54,23 @@ def book_view(isbn):
     genero = Genero.find_by_id(meta['genero_id'])['nombre']
     coso = Book.getByISBN(isbn)
     user_id = session['usuario_id']
+    print(user_id)
     perfil_id = session['perfil']
-    usuarios = Book.allUsers()
+    print('id perfil')
+    print(perfil_id)
+    #usuarios = Book.allUsers()
     esFavorito = Book.esFavorito(isbn, user_id, perfil_id)
-    enHistorial = Book.enHistorial(isbn, perfil_id)
+    print('resultado favorito')
     print(esFavorito)
+    print('comienzo historial')
+    enHistorial = Book.enHistorial(isbn, perfil_id)
+    print('Resultado historial')
+    print(enHistorial)
+    print('¿Hay comentario?')
+    comentarioByUser = Book.hayComentario(isbn, user_id, perfil_id)
+    print(comentarioByUser)
     adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
-    return render_template('/books/librosview.html', adm=adm, historial=enHistorial, favorito=esFavorito, meta = meta, users=usuarios, comentarios=coso,autor =autor, editorial = editorial, genero = genero, canReadBook=venc, hasChapters=hasChapters,user_id=user_id, perfil_id=perfil_id)
+    return render_template('/books/librosview.html', hayComentario= comentarioByUser, adm=adm, historial=enHistorial, favorito=esFavorito, meta = meta, comentarios=coso,autor =autor, editorial = editorial, genero = genero, canReadBook=venc, hasChapters=hasChapters,user_id=user_id, perfil_id=perfil_id)
 
 
 def comment_book(isbn):
@@ -69,18 +79,22 @@ def comment_book(isbn):
     perfil_id = session['perfil']
     if request.method == "POST":
         today = dt.datetime.now()
+        print('Contenido comentario')
+        print(request.form['comentario'])
         if request.form['comentario']:
             coso = request.form['comentario']
-            if request.form['select']:
-                puntuacion = request.form.get('select')
-            Book.comment_book(coso,isbn,puntuacion,today,user_id, perfil_id)
-            flash("comentario publicado exitosamente")
+            print(coso)
+            puntuacion = request.form.get('select')
+            Book.comment_book(coso,isbn,puntuacion,today,user_id,perfil_id)
+            flash("Reseña publicada exitosamente.")
         else:
-            if request.form['select']:
-                puntuacion = request.form.get('select')
-                print(puntuacion)
-                Book.setPuntuacion(isbn,puntuacion,today,user_id,perfil_id)
-                flash("comentario publicado exitosamente")
+            flash('Puntuación publicada exitosamente.')
+            puntuacion = request.form.get('select')
+            print(puntuacion)
+            Book.setPuntuacion(isbn,puntuacion,today,user_id,perfil_id)
+        if request.form['isSpoiler']:
+            comentario = Book.getComentario(isbn, user_id, perfil_id)
+            Book.isSpoiler(comentario['id'])
         venc = validate_date(isbn)
         meta = Book.find_meta_by_isbn(isbn)
         hasChapters = Book.allChapter(meta['isbn'])!=()
@@ -89,8 +103,9 @@ def comment_book(isbn):
         genero = Genero.find_by_id(meta['genero_id'])['nombre']
         coso = Book.getByISBN(isbn)
         usuarios = Book.allUsers()
+        esFavorito = Book.esFavorito(isbn, user_id, perfil_id)
         adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
-    return render_template('/books/librosview.html',adm=adm,meta = meta, perfil_id= perfil_id, users=usuarios, comentarios=coso,autor =autor, editorial = editorial, genero = genero, canReadBook=venc, hasChapters=hasChapters,user_id=user_id)
+    return render_template('/books/librosview.html', favorito= esFavorito, adm=adm,meta = meta, perfil_id= perfil_id, users=usuarios, comentarios=coso,autor =autor, editorial = editorial, genero = genero, canReadBook=venc, hasChapters=hasChapters,user_id=user_id)
     #return redirect(url_for("book_menu"))
 
 

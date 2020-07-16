@@ -10,8 +10,6 @@
 {% block main %}
 <div class="latestBooks"><b>Género:</b> {{genero}} </div>
 
-Nro de usuario: {{user_id}}
-Nro de perfil: {{perfil_id}}
 <div class="latestBooks">
 	<div class="latestBooks favView">
 		<table><tr>{%if favorito == False%}<td><form action="{{ url_for('mark_favorite', isbn = meta.isbn)}}" method="POST"><button type="submit" class="favBook">Marcar como favorito<span class="fa fa-heart"></span></button></form></td>{%else%}
@@ -22,13 +20,13 @@ Nro de perfil: {{perfil_id}}
 		<div class="bookInfo indView"><h1>{{meta.titulo}}</h1>
 			<b>Autor:</b> {{autor}}
 			<br><b>Sinopsis:</b>
-			<p class="bookPlot indView">{{meta.sinopsis}}</p>
+			<p class="bookPlot indView" style="width: 700px!important;margin-top:0!important;font-size: 16px!important;">{{meta.sinopsis}}</p>
 		</div>
 		<div class="bookInfo sndView">
 			<h1>Detalles del libro:</h1>
 			<b>ISBN:</b> {{meta.isbn}}
 			<b>Editorial:</b> {{editorial}}
-			<h1>Lectura:</h1>
+			{%if canReadBook or hasChapters %}<h1>Lectura:</h1>{%endif%}
 			{% if canReadBook %}
                 <a class="btn btn-link" href="{{url_for('book_open', isbn = meta.isbn, user_id = user_id)}}"><span class="fa fa-book"></span>Abrir Libro</a>  
             {% endif %}
@@ -40,45 +38,45 @@ Nro de perfil: {{perfil_id}}
 	</div>
 
 	{%if adm or historial == True%}
-	<div class="latestBooks comentView"><h1>Reseñar libro:</h1>
-		<form action="{{ url_for('comment_book', isbn=meta.isbn)}}" class="commentBook" name="comentario" method="post" enctype="multipart/form-data">
-			<textarea id="campo" name="comentario" class="comentario_input"></textarea>
-			<div style="color: #daa520;" class="starArea">
-				<select name="select">
-  					<option selected value="1">&#9733</option> 
-  					<option value="2">&#9733&#9733</option>
-  					<option value="3">&#9733&#9733&#9733</option>
-  					<option value="4">&#9733&#9733&#9733&#9733</option>
-  					<option value="5">&#9733&#9733&#9733&#9733&#9733</option>
-				</select>
+		{%if hayComentario == False %}
+			<div class="latestBooks comentView"><h1>Reseñar libro:</h1>
+				<form action="{{ url_for('comment_book', isbn=meta.isbn)}}" class="commentBook" name="comentario" method="post" enctype="multipart/form-data">
+					<textarea id="campo" name="comentario" class="comentario_input"></textarea>
+					<div style="font: 14px 'Jost', sans-serif; text-transform: uppercase; color:#c5c5c5;" class="starArea">
+						Puntuación:
+						<select name="select" style="color: #daa520;"> 
+							<option selected value="1">&#9733</option> 
+							<option value="2">&#9733&#9733</option>
+							<option value="3">&#9733&#9733&#9733</option>
+							<option value="4">&#9733&#9733&#9733&#9733</option>
+							<option value="5">&#9733&#9733&#9733&#9733&#9733</option>
+						</select>
+						¿El comentario tiene spoiler? <input type="checkbox" name="isSpoiler">
+					</div>
+					<input type="submit" style="margin-top: -18px;"value="Enviar" name="submit" class="comentario_submit">
+				</form>
 			</div>
-		    <input type="submit" style="margin-top: -18px;"value="Enviar" name="submit" class="comentario_submit">
-		</form>
-	</div>
+		{%endif%}
 	{%else%}
 		{%if historial == False%}
-			no esta en el historial
+			<br><br><div style="font: 14px 'Jost', sans-serif;background: #4c394e;color: white;padding: 10px;text-transform: uppercase;">Para poder realizar reseñas el libro debe encontrarse en el historial del perfil.</div>
 		{%endif%}
 	{%endif%}
 
 	{% if comentarios %}
-	<div class="latestBooks comentView"><h1>Reseñas publicadas:</h1>
+		<div class="latestBooks comentView"><h1>Reseñas publicadas:</h1>
 	{% endif %}
-
 	{% for comentario in comentarios %}
-	{%if adm or comentario.usuario_id == user_id%}
-		{%if adm or comentario.perfil_id == perfil_id%}
-			<div class="buttonarea">
-				<form action="{{ url_for('delete_comment', isbn = meta.isbn, idCom= comentario.id)}}" method="POST"><button type="submit" class="favBook"><span class="fa fa-trash-alt"></span> Eliminar Comentario</button></form>
-				{% if comentario.spoiler == 0 %}<form action="{{ url_for('spoiler_comment', isbn = meta.isbn, idCom= comentario.id)}}" method="POST"><button type="submit" class="favBook"><span class="fa fa-trash-alt"></span> Marcar como spoiler</button></form>{%endif%}
-			</div>
-		{%endif%}
-	{%endif%}
-	<br>
-	<div class="comentario">
-		<div class="opinion_info">por <b>{{comentario.usuario_id}}</b> el día <b>{{comentario.fecha}}</b></div>
-		<p class="comentP">
-			{% if comentario.spoiler == 1 %}
+		{%if adm or comentario.usuario_id == user_id%}
+			{%if adm or comentario.perfil_id == perfil_id%}
+				<div class="buttonarea">
+					<form action="{{ url_for('delete_comment', isbn = meta.isbn, idCom= comentario.id)}}" method="POST"><button type="submit" class="favBook"><span class="fa fa-trash-alt"></span> Eliminar Comentario</button></form>
+					{% if comentario.spoiler == 0 and comentario.comentario != none%}<form action="{{ url_for('spoiler_comment', isbn = meta.isbn, idCom= comentario.id)}}" method="POST"><button type="submit" class="favBook"><span class="fa fa-trash-alt"></span> Marcar como spoiler</button></form>{%endif%}
+				</div>
+			{%endif%}
+		{%endif%}<br>
+		<div class="comentario" style="width: 900px!important;">
+			<div class="comentario1"><p><b>por {{comentario.usuario_id}}</b> <br>&#9733; {{comentario.calificacion}} Estrellas</p></div><div class="resenacontenido" style="width: 678px!important;"><p class="reviewContent">{% if comentario.spoiler == 1 %}
 				<div style="margin-top: -59px!important;opacity: 0;">{{comentario.comentario}}</div><br><span tabindex="0">Este comentario fue marcado como spoiler. Aprete sobre este mensaje para ver su contenido.</span><div class="viewDetail" style="font-size: 16px!important;">{{comentario.comentario}}</div>
 			{% else %}
 			{% if comentario.comentario == None %}
@@ -87,14 +85,16 @@ Nro de perfil: {{perfil_id}}
 				{{comentario.comentario}}
 				id perfil: {{comentario.perfil_id}}
 			{%endif%}
-			{% endif %}
-		</p>
-		<div class="opinion_info"><div class="movie-stars">&#9733; {{comentario.calificacion}} Estrellas</div></div>
-	</div>
-		<br>
+			{% endif %}</p><p class="dateReview">el día <b>{{comentario.fecha}}</b></p></div>
+		</div><br>
 	{%endfor%}
 </div>
 </div>
 
 <style type="text/css">.viewSpoiler{color: red}</style>
+<script>
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+</script>
 {%endblock%}

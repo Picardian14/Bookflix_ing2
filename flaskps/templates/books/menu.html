@@ -111,11 +111,7 @@
         <div class="bookBox">
             <div class="bookInfo">
                 <a href="{{url_for('book_view', isbn = book.isbn)}}"><h3>{{book.titulo}}</h3></a>
-                <p class="bookPlot">{{book.sinopsis}}
-                    {% if canReadBook[books.index(book)] %}
-                    <a class="btn btn-link" href="{{url_for('book_open', isbn = book.isbn)}}">Abrir Libro</a>    
-                {% endif %}
-                </p>
+                <p class="bookPlot">{{book.sinopsis}}</p>
                 <p class="bookData">{{book.autor_id}}</p>
             </div>
         </div>

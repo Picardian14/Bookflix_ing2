@@ -24,7 +24,7 @@ class Book(object):
         row = cursor.fetchall()
         print(row)
         if row == ():
-            print('no hay ningun favorito')
+            print('no es favorito')
             return False
         else:
             print('es favorito')
@@ -104,7 +104,7 @@ class Book(object):
 
 
     @classmethod
-    def comment_book(cls,comment,isbn,calificacion,today,user_id, perfil_id):
+    def comment_book(cls,comment,isbn,calificacion,today,user_id, perfil_id, ):
         sql = "INSERT INTO comentarios(comentario,isbn,calificacion,fecha,usuario_id,perfil_id) VALUES (%s,%s,%s,%s,%s, %s)"
         data = (comment,isbn,calificacion,today,user_id,perfil_id)
         cursor = cls.db.cursor()
@@ -150,6 +150,29 @@ class Book(object):
         cls.db.commit()
         return True
 
+
+    @classmethod
+    def getComentario(cls,isbn, userID, perfilID):
+        sql = 'SELECT * FROM comentarios WHERE isbn = %s AND usuario_id = %s AND perfil_id = %s'
+        data = (isbn, userID, perfilID)
+        cursor = cls.db.cursor()
+        cursor.execute(sql,data)
+        return cursor.fetchone()
+
+    @classmethod
+    def hayComentario(cls,isbn, userID, perfilID):
+        sql = 'SELECT * FROM comentarios WHERE isbn = %s AND usuario_id = %s AND perfil_id = %s'
+        data = (isbn, userID, perfilID)
+        cursor = cls.db.cursor()
+        cursor.execute(sql,data)
+        row = cursor.fetchall()
+        print(row)
+        if row == ():
+            print('no hay ningún comentario')
+            return False
+        else:
+            print('hay comentario')
+            return True
 
 
     @classmethod
@@ -282,7 +305,7 @@ class Book(object):
         cursor = cls.db.cursor()
         cursor.execute(sql, (data))
         row = cursor.fetchall()
-        print(row)
+        #print(row)
         if row == ():
             print('no esta en historial')
             return False

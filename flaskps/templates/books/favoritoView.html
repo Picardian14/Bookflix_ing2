@@ -14,10 +14,9 @@
 	    <div class="bookInfo">
 	        <a href=""><h3></h3></a>
 	        <p class="bookPlot"></p>
-	        <p class="bookData"></p>
+	        <p class="bookData">{{favBook.isbn}}</p>
 	    </div>
 	</div>
-		{{favBook.isbn}}
 	{% endfor %}
 	{%else%}
 		No hay libros favoritos.
