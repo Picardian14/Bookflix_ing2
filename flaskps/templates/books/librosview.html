@@ -39,9 +39,7 @@ Nro de perfil: {{perfil_id}}
 		<p class="bookData indView" style="color:#4c394e!important;">hola</p>
 	</div>
 
-	{%if historial == False%}
-		no esta en el historial
-	{%else%}
+	{%if adm or historial == True%}
 	<div class="latestBooks comentView"><h1>Reseñar libro:</h1>
 		<form action="{{ url_for('comment_book', isbn=meta.isbn)}}" class="commentBook" name="comentario" method="post" enctype="multipart/form-data">
 			<textarea id="campo" name="comentario" class="comentario_input"></textarea>
@@ -57,6 +55,10 @@ Nro de perfil: {{perfil_id}}
 		    <input type="submit" style="margin-top: -18px;"value="Enviar" name="submit" class="comentario_submit">
 		</form>
 	</div>
+	{%else%}
+		{%if historial == False%}
+			no esta en el historial
+		{%endif%}
 	{%endif%}
 
 	{% if comentarios %}
@@ -64,11 +66,13 @@ Nro de perfil: {{perfil_id}}
 	{% endif %}
 
 	{% for comentario in comentarios %}
-	{%if adm%}
-	<div class="buttonarea">
-		<form action="{{ url_for('delete_comment', isbn = meta.isbn, idCom= comentario.id)}}" method="POST"><button type="submit" class="favBook"><span class="fa fa-trash-alt"></span> Eliminar Comentario</button></form>
-		{% if comentario.spoiler == 0 %}<form action="{{ url_for('spoiler_comment', isbn = meta.isbn, idCom= comentario.id)}}" method="POST"><button type="submit" class="favBook"><span class="fa fa-trash-alt"></span> Marcar como spoiler</button></form>{%endif%}
-	</div>
+	{%if adm or comentario.usuario_id == user_id%}
+		{%if adm or comentario.perfil_id == perfil_id%}
+			<div class="buttonarea">
+				<form action="{{ url_for('delete_comment', isbn = meta.isbn, idCom= comentario.id)}}" method="POST"><button type="submit" class="favBook"><span class="fa fa-trash-alt"></span> Eliminar Comentario</button></form>
+				{% if comentario.spoiler == 0 %}<form action="{{ url_for('spoiler_comment', isbn = meta.isbn, idCom= comentario.id)}}" method="POST"><button type="submit" class="favBook"><span class="fa fa-trash-alt"></span> Marcar como spoiler</button></form>{%endif%}
+			</div>
+		{%endif%}
 	{%endif%}
 	<br>
 	<div class="comentario">
