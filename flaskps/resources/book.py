@@ -56,11 +56,11 @@ def book_view(isbn):
     user_id = session['usuario_id']
     perfil_id = session['perfil']
     usuarios = Book.allUsers()
-
-
     esFavorito = Book.esFavorito(isbn, user_id, perfil_id)
+    enHistorial = Book.enHistorial(isbn, perfil_id)
     print(esFavorito)
-    return render_template('/books/librosview.html', favorito=esFavorito, meta = meta, users=usuarios, comentarios=coso,autor =autor, editorial = editorial, genero = genero, canReadBook=venc, hasChapters=hasChapters,user_id=user_id, perfil_id=perfil_id)
+    adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
+    return render_template('/books/librosview.html', adm=adm, historial=enHistorial, favorito=esFavorito, meta = meta, users=usuarios, comentarios=coso,autor =autor, editorial = editorial, genero = genero, canReadBook=venc, hasChapters=hasChapters,user_id=user_id, perfil_id=perfil_id)
 
 
 def comment_book(isbn):
@@ -78,7 +78,8 @@ def comment_book(isbn):
         else:
             if request.form['select']:
                 puntuacion = request.form.get('select')
-                Book.setPuntuacion(isbn,puntuacion,today,user_id, perfil_id)
+                print(puntuacion)
+                Book.setPuntuacion(isbn,puntuacion,today,user_id,perfil_id)
                 flash("comentario publicado exitosamente")
         venc = validate_date(isbn)
         meta = Book.find_meta_by_isbn(isbn)
@@ -88,7 +89,8 @@ def comment_book(isbn):
         genero = Genero.find_by_id(meta['genero_id'])['nombre']
         coso = Book.getByISBN(isbn)
         usuarios = Book.allUsers()
-    return render_template('/books/librosview.html', meta = meta, users=usuarios, comentarios=coso,autor =autor, editorial = editorial, genero = genero, canReadBook=venc, hasChapters=hasChapters,user_id=user_id)
+        adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
+    return render_template('/books/librosview.html',adm=adm,meta = meta, perfil_id= perfil_id, users=usuarios, comentarios=coso,autor =autor, editorial = editorial, genero = genero, canReadBook=venc, hasChapters=hasChapters,user_id=user_id)
     #return redirect(url_for("book_menu"))
 
 

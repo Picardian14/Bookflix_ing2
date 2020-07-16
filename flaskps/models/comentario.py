@@ -5,9 +5,9 @@ class Comentario(object):
 
         #COMENTAR LIBRO
     @classmethod
-    def comment_book(cls,comment,isbn,calificacion,today,user_id):
-        sql = "INSERT INTO comentarios(comentario,isbn,calificacion,fecha,usuarios_id) VALUES (%s,%s,%s,%s,%s)"
-        data = (comment,isbn,calificacion,today,user_id)
+    def comment_book(cls,comment,isbn,calificacion,today,user_id, perfil_id):
+        sql = "INSERT INTO comentarios(comentario,isbn,calificacion,fecha,usuario_id,perfil_id) VALUES (%s,%s,%s,%s,%s, %s)"
+        data = (comment,isbn,calificacion,today,user_id,perfil_id)
         cursor = cls.db.cursor()
         cursor.execute(sql,data)
         cls.db.commit()
@@ -15,11 +15,11 @@ class Comentario(object):
 
 
     @classmethod
-    def setPuntuacion(cls,isbn,calificacion,today,user_id):
-        sql = "INSERT INTO comentarios(isbn,calificacion,fecha,usuarios_id) VALUES (%s,%s,%s,%s)"
-        data = (isbn,calificacion,today,user_id)
+    def setPuntuacion(cls,isbn,calificacion,today,user_id,perfil_id):
+        sql = "INSERT INTO comentarios(isbn,calificacion,fecha,usuario_id,perfil_id) VALUES (%s,%s,%s,%s,%s)"
+        data = (isbn,calificacion,today,user_id,perfil_id)
         cursor = cls.db.cursor()
-        cursor.execute(sql,data)
+        cursor.execute(sql,(data))
         cls.db.commit()
         return True
 

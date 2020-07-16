@@ -31,7 +31,7 @@ class Book(object):
             return True
 
     @classmethod
-    def deleteFavoritoByISBN(cls,isbnD):
+    def deleteFavoritoByISBN(cls,isbn):
         sql = "DELETE FROM favoritos WHERE isbn = %s"
         data = (isbn)
         cursor = cls.db.cursor()
@@ -103,23 +103,21 @@ class Book(object):
         return cursor.fetchall()  
 
 
-
     @classmethod
     def comment_book(cls,comment,isbn,calificacion,today,user_id, perfil_id):
-        sql = "INSERT INTO comentarios(comentario,isbn,calificacion,fecha,usuario_id, perfil_id) VALUES (%s,%s,%s,%s,%s)"
-        data = (comment,isbn,calificacion,today,user_id, perfil_id)
+        sql = "INSERT INTO comentarios(comentario,isbn,calificacion,fecha,usuario_id,perfil_id) VALUES (%s,%s,%s,%s,%s, %s)"
+        data = (comment,isbn,calificacion,today,user_id,perfil_id)
         cursor = cls.db.cursor()
         cursor.execute(sql,data)
         cls.db.commit()
         return True
 
-
     @classmethod
-    def setPuntuacion(cls,isbn,calificacion,today,user_id, perfil_id):
-        sql = "INSERT INTO comentarios(isbn,calificacion,fecha,usuario_id, perfil_id) VALUES (%s,%s,%s,%s)"
-        data = (isbn,calificacion,today,user_id, perfil_id)
+    def setPuntuacion(cls,isbn,calificacion,today,user_id,perfil_id):
+        sql = "INSERT INTO comentarios(isbn,calificacion,fecha,usuario_id,perfil_id) VALUES (%s,%s,%s,%s,%s)"
+        data = (isbn,calificacion,today,user_id,perfil_id)
         cursor = cls.db.cursor()
-        cursor.execute(sql,data)
+        cursor.execute(sql,(data))
         cls.db.commit()
         return True
 
@@ -275,6 +273,23 @@ class Book(object):
         if books != ():
             books.sort(key=lambda b: b['fecha_ultima'], reverse=True)# if books != () else None
         return books
+
+
+    @classmethod
+    def enHistorial(cls, isbn, perfil):
+        sql = 'SELECT * FROM historial WHERE perfil_id= %s AND isbn = %s'
+        data = (perfil, isbn)
+        cursor = cls.db.cursor()
+        cursor.execute(sql, (data))
+        row = cursor.fetchall()
+        print(row)
+        if row == ():
+            print('no esta en historial')
+            return False
+        else:
+            print('esta en historial')
+            return True
+
 
     @classmethod     
     def allMeta(cls):
