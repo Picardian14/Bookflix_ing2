@@ -120,7 +120,7 @@ DROP TABLE IF EXISTS `libro`;
 CREATE TABLE `libro`(
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `isbn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `archivo` varchar(255) COLLATE utf8_unicode_ci,
+  `archivo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `available_from` datetime DEFAULT NULL,
   `available_to` datetime DEFAULT NULL,
   PRIMARY KEY (id),
@@ -132,7 +132,7 @@ DROP TABLE IF EXISTS `capitulo`;
 CREATE TABLE `capitulo`(
   `num` int(11) NOT NULL,
   `isbn` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `archivo` varchar(255) COLLATE utf8_unicode_ci,
+  `archivo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `available_from` datetime DEFAULT NULL,
   `available_to` datetime DEFAULT NULL,
   CONSTRAINT PK_capitulo PRIMARY KEY (num, isbn)
