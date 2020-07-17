@@ -174,13 +174,16 @@ def render_historial():
     areChapter = []
     availables = []
     today = dt.datetime.now()
+    print(session['perfil'])
     for book in books:
         if 'cap' in book['archivo']: #Forma de saber si es un cap, o el libro entero
             areChapter.append(True)
             isbn = book['isbn']
-            num = int(re.search(r'\d+', book['archivo']).group(0))
+            num = int(re.search(r'\d+', book['archivo']).group(0))-1
             cap = Book.find_chapter_by_isbn(isbn, num)
             book['titulo'] = book['titulo'] + '\nCap ' + str(num)
+            print(cap)
+            print(today)
             canRead = cap['available_from'] < today and ((cap['available_to'] is None) or cap['available_to'] > today)
             availables.append(canRead)
         else:

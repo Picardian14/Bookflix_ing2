@@ -23,7 +23,7 @@
                 <a href="/usuarios"><i class="fas fa-users" aria-hidden="true"></i>Usuarios</a>
                 <a href="/novedades"><i class="fas fa-newspaper"></i>Novedades</a>
                 <a href="/libros"><i class="fas fa-book-open"></i>Libros</a>
-                <a href="/perfiles"><i class="fas fa-users" aria-hidden="true"></i> Perfiles</a>
+                <a href="/perfiles"><i class="fas fa-users" aria-hidden="true"></i> Cambiar de perfil</a>
                 {%if adm%}
                 <a href="/configuracion"><i class="fas fa-wrench"></i>Configuración</a>
                 {%endif%}
@@ -35,7 +35,7 @@
                 <div id="navbar">
                     <a href="/index"><i class="fas fa-home" aria-hidden="true"></i>Inicio</a>
                     {% if user_id %}
-                        <a href="/usuarios/mostrar/{{user_id}}"><i class="fas fa-user" aria-hidden="true"></i> Ver mi perfil</a>
+                        <a href="/usuarios/mostrar/{{user_id}}"><i class="fas fa-user" aria-hidden="true"></i> Ver mi usuario</a>
                         <a href="/librosFavoritos"><i class="fas fa-user" aria-hidden="true"></i> Ver favoritos</a>
                         <a href="/cerrar_sesion"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Cerrar sesión</a>
                     {% else %}

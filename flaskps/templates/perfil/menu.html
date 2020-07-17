@@ -23,6 +23,16 @@
         </script>
     {% endblock %}
 {% block main%}
+{% block navbar %}
+    <img src="https://i.imgur.com/cACkaa3.png" class="logo_img">
+    <div id="navbar">
+        <a href="/index"><i class="fas fa-home" aria-hidden="true"></i>Inicio</a>
+        {% if user_id %}
+            <a href="/usuarios/mostrar/{{user_id}}"><i class="fas fa-user" aria-hidden="true"></i> Ver usuario</a>
+            <a href="/cerrar_sesion"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Cerrar sesión</a>
+        {%endif%}
+    </div>
+{% endblock %}
 <div class="latestBooks"><h1>¿Quién está leyendo?</h1>
 <table>
     <tr>{% for perfil in perfiles %}

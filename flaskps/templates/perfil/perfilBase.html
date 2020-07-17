@@ -32,27 +32,13 @@
                 <a href="/usuarios"><i class="fas fa-users" aria-hidden="true"></i>Usuarios</a>
                 <a href="/novedades"><i class="fas fa-newspaper"></i>Novedades</a>
                 <a href="/libros"><i class="fas fa-book-open"></i>Libros</a>
-                <a href="/perfiles"><i class="fas fa-users" aria-hidden="true"></i> Perfiles</a>
+                <a href="/perfiles"><i class="fas fa-users" aria-hidden="true"></i> Cambiar de perfil</a>
                 {%if adm%}
                 <a href="/configuracion"><i class="fas fa-wrench"></i>Configuración</a>
                 {%endif%}
             </div>
         {% endblock %}
         <div id="intoWrap" style="padding-bottom: 0px!important;">
-            {% block navbar %}
-                <img src="https://i.imgur.com/cACkaa3.png" class="logo_img">
-                <div id="navbar">
-                    <a href="/index"><i class="fas fa-home" aria-hidden="true"></i>Inicio</a>
-                    {% if user_id %}
-                        <a href="/usuarios/mostrar/{{user_id}}"><i class="fas fa-user" aria-hidden="true"></i> Ver mi perfil</a>
-                        <a href="/librosFavoritos"><i class="fas fa-user" aria-hidden="true"></i> Ver favoritos</a>
-                        <a href="/cerrar_sesion"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Cerrar sesión</a>
-                    {% else %}
-                        <a href="/usuario/new"><i class="fas fa-user-plus" aria-hidden="true"></i> Registro</a>
-                        <a href="/iniciar_sesion"><i class="fas fa-users" aria-hidden="true"></i> Ingreso</a>
-                    {% endif %}
-                </div>
-            {% endblock %}
             {% block alert %}
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}
