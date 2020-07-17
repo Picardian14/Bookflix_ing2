@@ -40,6 +40,7 @@ def render_favoritos():
     user_id= session['usuario_id']
     perfil_id = session['perfil']
     favoritos = Book.getFavoritos(user_id, perfil_id)
+    favoritos = list(map(lambda fav: Book.find_meta_by_isbn(fav['isbn']), favoritos ) )        
     adm = "configuracion_usarInhabilitado" in session['permisos'] #Permiso que solo tiene un administrador
     return render_template('books/favoritoView.html', fav=favoritos, adm=adm, user_id=user_id)
 
