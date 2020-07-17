@@ -1,4 +1,7 @@
 {% extends "perfil/perfilBase.html" %}
+{% block title %}
+<title>Perfiles</title>
+{% endblock %}
 {% block confirmFunction %}
     <script>
         $( function() {
@@ -19,28 +22,13 @@
         } );
         </script>
     {% endblock %}
-
-<div class="container">
-    <div class="row">
-        <div class="col-md-20">
-            <div class="panel panel-primary" >
-                <div class="panel-heading">
-                        <h3 class="panel-title">Perfiles</h3>
-                </div>
-                <br>  
-                {% block main%}                      
-                    {% for perfil in perfiles %}
-                    
-                    <div>
-                        <a href="{{url_for('perfil_select', id=perfil.id)}}">{{perfil.nombre}}</a>
-                    
-                        <!-- <a onclick="return confirm('Se borrará todo el historial de {{perfil.nombre}} ¿confirma?')" href="{{url_for('perfil_delete', id=perfil.id)}}">eliminar</a> <!--> 
-                        <button type="button" class="btn" data-toggle="modal" data-target="#exampleModalCenter{{perfil.id}}">
+{% block main%}
+<div class="latestBooks"><h1>¿Quién está leyendo?</h1>
+<table>
+    <tr>{% for perfil in perfiles %}
+        <td><div class="profileNew"><p><a href="{{url_for('perfil_select', id=perfil.id)}}" style="color: white!important;font:17px 'Jost', sans-serif; text-transform: uppercase;">{{perfil.nombre}}</a></p><button type="button" class="btn" data-toggle="modal" data-target="#exampleModalCenter{{perfil.id}}">
                             Eliminar
-                          </button>
-                        <br>
-                    </div>
-                                    
+                          </button></div></td>                 
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModalCenter{{perfil.id}}">
                         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -65,45 +53,38 @@
                         </div>
                         </div>
                     </div>
-                    {% endfor %}
-                    <a href="{{url_for('perfil_new')}}">Crear Perfil</a>
-                    <br>
-                    <br>
-                    {% if esPremium %}
-                        <a onclick="return confirm('Pasará a plan basico. Sólo podrá tener 2 perfiles ¿confirma?')" href="{{url_for('perfil_to_basic')}}">Pasar a basico</a>
-                    {% else %}
-                        <a onclick="return confirm('Pasará a plan premium. La cuota aumentará ¿confirma?')" href="{{url_for('perfil_to_premium')}}">Pasar a premium</a>
-                    {% endif %}
-                    <br>
-                    <br>
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarCuentaCenter">
-                        Eliminar mi cuenta
-                      </button>
+                    {%endfor%}
+                </tr>
+            </table>
+            <br>  
+<center><a href="{{url_for('perfil_new')}}" class="createNew">Crear Perfil</a>{% if esPremium %}
+<a onclick="return confirm('Pasará a plan basico. Sólo podrá tener 2 perfiles ¿confirma?')" href="{{url_for('perfil_to_basic')}}" class="createNew">Pasar a basico</a>
+{% else %}
+<a onclick="return confirm('Pasará a plan premium. La cuota aumentará ¿confirma?')" href="{{url_for('perfil_to_premium')}}" class="createNew">Pasar a premium</a>
+{% endif %}<br><br><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#eliminarCuentaCenter">Eliminar mi cuenta</button></center>
+</div>  
+    <div class="modal fade" id="eliminarCuentaCenter">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eliminarCuentaLongTitle" style="color: black!important;">Eliminará su cuenta:</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                </div>
+                <div class="modal-body">
+                    <h3 style="color: black!important;">Perderá todos los datos asociados a su cuenta. Esta acción es irreversible</h3>
+                    <p>¿Está segure?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <form action="{{url_for('user_resource_delete', id = perfiles[0].usuario_id)}}" method="post">
+                        <input type="submit" value="Delete" class="btn btn-danger">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <div class="modal fade" id="eliminarCuentaCenter">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                            <h5 class="modal-title" id="eliminarCuentaLongTitle">Eliminará su cuenta:</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            </div>
-                            <div class="modal-body">
-                            <h3>Perderá todos los datos asociados a su cuenta. Esta acción es irreversible</h3>
-                            <p>¿Está segure?</p>
-                            </div>
-                            <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-
-                            <form action="{{url_for('user_resource_delete', id = perfiles[0].usuario_id)}}" method="post">
-                                <input type="submit" value="Delete" class="btn btn-danger">
-                            </form>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-
-                
-
-                    {% endblock %}
+<style>h1{color:#4c394e!important; text-shadow: 0px!important;} a.createNew{background: #4c394e;font: 13px 'Jost', sans-serif;color: white;padding: 10px;text-transform: uppercase;}</style>
+                  {% endblock %}

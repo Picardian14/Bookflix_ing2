@@ -11,7 +11,8 @@ def render_menu():
     print(plan)
     esPremium = plan == 'premium'     
     print(esPremium)
-    return render_template("perfil/menu.html", perfiles=perfiles, esPremium=esPremium)
+    id_user=session['usuario_id']
+    return render_template("perfil/menu.html", perfiles=perfiles, esPremium=esPremium, user_id=id_user)
 
 def select(id):
     session['perfil'] = id

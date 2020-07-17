@@ -87,14 +87,14 @@ def comment_book(isbn):
             puntuacion = request.form.get('select')
             Book.comment_book(coso,isbn,puntuacion,today,user_id,perfil_id)
             flash("Reseña publicada exitosamente.")
+            if request.form.get('isSpoiler') == "on":
+                comentario = Book.getComentario(isbn, user_id, perfil_id)
+                Book.isSpoiler(comentario['id'])
         else:
             flash('Puntuación publicada exitosamente.')
             puntuacion = request.form.get('select')
             print(puntuacion)
             Book.setPuntuacion(isbn,puntuacion,today,user_id,perfil_id)
-        if request.form['isSpoiler']:
-            comentario = Book.getComentario(isbn, user_id, perfil_id)
-            Book.isSpoiler(comentario['id'])
         venc = validate_date(isbn)
         meta = Book.find_meta_by_isbn(isbn)
         hasChapters = Book.allChapter(meta['isbn'])!=()

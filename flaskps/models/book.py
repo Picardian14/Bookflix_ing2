@@ -104,14 +104,14 @@ class Book(object):
 
 
     @classmethod
-    def comment_book(cls,comment,isbn,calificacion,today,user_id, perfil_id, ):
+    def comment_book(cls,comment,isbn,calificacion,today,user_id, perfil_id):
         sql = "INSERT INTO comentarios(comentario,isbn,calificacion,fecha,usuario_id,perfil_id) VALUES (%s,%s,%s,%s,%s, %s)"
         data = (comment,isbn,calificacion,today,user_id,perfil_id)
         cursor = cls.db.cursor()
         cursor.execute(sql,data)
         cls.db.commit()
         return True
-
+        
     @classmethod
     def setPuntuacion(cls,isbn,calificacion,today,user_id,perfil_id):
         sql = "INSERT INTO comentarios(isbn,calificacion,fecha,usuario_id,perfil_id) VALUES (%s,%s,%s,%s,%s)"

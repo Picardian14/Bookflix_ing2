@@ -28,7 +28,7 @@
 			<b>Editorial:</b> {{editorial}}
 			{%if canReadBook or hasChapters %}<h1>Lectura:</h1>{%endif%}
 			{% if canReadBook %}
-                <a class="btn btn-link" href="{{url_for('book_open', isbn = meta.isbn, user_id = user_id)}}"><span class="fa fa-book"></span>Abrir Libro</a>  
+                <a class="btn btn-link" href="{{url_for('book_open', isbn = meta.isbn, user_id = user_id)}}"><span class="fa fa-book"></span> Abrir Libro</a>  
             {% endif %}
             {% if hasChapters %}
                     <a class="btn btn-link" href="{{url_for('book_cap_menu', isbn = meta.isbn)}}"><span class="fa fa-book"></span> Abrir Capitulos</a>    
@@ -69,29 +69,34 @@
 	{% for comentario in comentarios %}
 		{%if adm or comentario.usuario_id == user_id%}
 			{%if adm or comentario.perfil_id == perfil_id%}
-				<div class="buttonarea">
+				<div class="buttonarea" style="width: 900px!important;">
 					<form action="{{ url_for('delete_comment', isbn = meta.isbn, idCom= comentario.id)}}" method="POST"><button type="submit" class="favBook"><span class="fa fa-trash-alt"></span> Eliminar Comentario</button></form>
-					{% if comentario.spoiler == 0 and comentario.comentario != none%}<form action="{{ url_for('spoiler_comment', isbn = meta.isbn, idCom= comentario.id)}}" method="POST"><button type="submit" class="favBook"><span class="fa fa-trash-alt"></span> Marcar como spoiler</button></form>{%endif%}
+					{% if comentario.spoiler == 0 and comentario.comentario != none%}{%if adm%}<form action="{{ url_for('spoiler_comment', isbn = meta.isbn, idCom= comentario.id)}}" method="POST"><button type="submit" class="favBook"><span class="fa fa-exclamation"></span> Marcar como spoiler</button></form>{%endif%}{%endif%}
 				</div>
 			{%endif%}
 		{%endif%}<br>
 		<div class="comentario" style="width: 900px!important;">
-			<div class="comentario1"><p><b>por {{comentario.usuario_id}}</b> <br>&#9733; {{comentario.calificacion}} Estrellas</p></div><div class="resenacontenido" style="width: 678px!important;"><p class="reviewContent">{% if comentario.spoiler == 1 %}
-				<div style="margin-top: -59px!important;opacity: 0;">{{comentario.comentario}}</div><br><span tabindex="0">Este comentario fue marcado como spoiler. Aprete sobre este mensaje para ver su contenido.</span><div class="viewDetail" style="font-size: 16px!important;">{{comentario.comentario}}</div>
-			{% else %}
-			{% if comentario.comentario == None %}
-				No se ha hecho ningún comentario.
-			{% else %}
-				{{comentario.comentario}}
-				id perfil: {{comentario.perfil_id}}
-			{%endif%}
-			{% endif %}</p><p class="dateReview">el día <b>{{comentario.fecha}}</b></p></div>
+			<div class="comentario1"><p><b>por {{comentario.usuario_id}}</b> <br>&#9733; {{comentario.calificacion}} Estrellas</p></div><div class="resenacontenido" style="width: 678px!important;">
+				<p class="reviewContent" style="height: 165px!important;">
+					{% if comentario.spoiler == 1 %}
+						<div style="margin-top: -187px!important;opacity: 0;">{{comentario.comentario}}</div><div class="comentarioSpoilerPublicado"><span tabindex="0">Este comentario fue marcado como spoiler. Aprete sobre este mensaje para ver su contenido.</span><div class="viewDetail" style="font-size: 16px!important;">{{comentario.comentario}}</div></div>
+					{% else %}
+					{% if comentario.comentario == None %}
+						No se ha hecho ningún comentario.
+					{% else %}
+						{{comentario.comentario}}
+						id perfil: {{comentario.perfil_id}}
+					{%endif%}
+					{% endif %}
+				</p>
+				<p class="dateReview">el día <b>{{comentario.fecha}}</b></p>
+			</div>
 		</div><br>
 	{%endfor%}
 </div>
 </div>
 
-<style type="text/css">.viewSpoiler{color: red}</style>
+<style type="text/css">.viewSpoiler{color: red} .comentarioSpoilerPublicado{height: 147px;text-align: justify;line-height: 100%;} #intoWrap{padding-bottom: 0px!important}</style>
 <script>
     if ( window.history.replaceState ) {
         window.history.replaceState( null, null, window.location.href );
