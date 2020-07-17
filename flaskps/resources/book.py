@@ -274,6 +274,7 @@ def delete(isbn):
         os.remove(static_path+book_name+'/'+filename)
         Book.mark_incomplete(isbn)
         Book.delete(isbn)
+        Book.delete_record_by_name(filename)
         flash("Archivo eliminado")
     else:
         flash("No hay un libro completo cargado")
@@ -335,6 +336,7 @@ def delete_chapter(isbn, num):
             os.remove(static_path+book_name+'/'+book_name+'_Full.pdf')
             Book.mark_incomplete(isbn)
         Book.delete_chapter(isbn, num)
+        Book.delete_record_by_name(filename)
         flash("Archivo eliminado")
     else:
         flash("Algo raro paso")

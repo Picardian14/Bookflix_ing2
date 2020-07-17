@@ -285,6 +285,15 @@ class Book(object):
         cursor.execute(sql, isbn)
         cls.db.commit()
         return True
+
+    @classmethod
+    def delete_record_by_name(cls, archivo):
+        sql = "DELETE FROM historial WHERE archivo = %s"
+        cursor = cls.db.cursor()
+        cursor.execute(sql, archivo)
+        cls.db.commit()
+        return True
+
     
     #GETS
     @classmethod
