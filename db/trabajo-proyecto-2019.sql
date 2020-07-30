@@ -88,7 +88,7 @@ CREATE TABLE `historial`(
   `perfil_id` int(11) NOT NULL,
   `fecha_ultima` datetime DEFAULT NULL,
   PRIMARY KEY (archivo, perfil_id),
-  CONSTRAINT FK_historial_perfil_id FOREIGN KEY (perfil_id) REFERENCES perfil(id) ON DELETE CASCADE,
+  
   CONSTRAINT FK_historial_isbn FOREIGN KEY (isbn) REFERENCES metadato(isbn)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
