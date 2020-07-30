@@ -3,3 +3,4 @@
 /flaskps/config/*
 flaskps/config/development.py
 .vscode/
+/env
