@@ -3,4 +3,4 @@ PyMySQL==0.9.3
 Flask-Session==0.3
 Flask-Login==0.4.1
 requests==2.22.0
-PyPDF2==1.26.0
+PyPDF2==1.27.9
